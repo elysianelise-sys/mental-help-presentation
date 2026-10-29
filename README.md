@@ -38,7 +38,7 @@ Everything is static. There is no install or build step.
 
 1 Cover · 2–3 Problem and solution · 4–5 Audience and persona · 6 Scope (390px, one hand) · 7 User flow · 8–13 Design system (colour, type, mascot direction, rationale, emotion system) · 14 HTML prototype · 15–16 References · 17 Figma screens · 18 Live app · 19 New screens (Profile, Calendar, Settings) · 20–21 Bonus challenges · 22–26 Reflection (skills, hurdles, fixes after testing, concept to final) · 27 Final app in hand · 28 What's next · 29 Thank you (video with music and QR code).
 
-The cover has a "Project links" row: live app, Figma, user flow (Figma), HTML prototype, Dribbble reference.
+The cover has a "Project links" row: Progressive assessment (Google Slides), Figma, Dribbble reference.
 
 ## Links used in the deck
 
