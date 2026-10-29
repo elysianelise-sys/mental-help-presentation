@@ -1,6 +1,6 @@
 # Mental Help · Project presentation
 
-The UI/UX project presentation for **Mental Help** by Elise, as an animated web slideshow (27 slides).
+The UI/UX project presentation for **Mental Help** by Elise, as an animated web slideshow (29 slides).
 
 - **Live:** https://mental-help-presentation-chi.vercel.app
 - **The app it presents:** https://mental-help-alpha.vercel.app
@@ -15,13 +15,13 @@ The UI/UX project presentation for **Mental Help** by Elise, as an animated web 
 ## What is in this repo
 
 ```
-index.html        the whole slideshow (27 slides, navigation, animations, phone layout)
+index.html        the whole slideshow (29 slides, navigation, animations, phone layout)
 assets/           images, icons, photos and the ending video (5085ea1900-qr2.mp4)
 thumbs/           light pictures of each slide, used for the phone list view
 vercel.json       static deploy settings
 exports/          PDF of the deck, the ending video (MP4), the QR code PNG, the 15s showreel
 source/           how it was made (reference, not needed to deploy)
-  slides/         the 27 slide files and deck.json from the original Claude Slides deck
+  slides/         the 29 slide files and deck.json from the original Claude Slides deck
   site_build.py   builds index.html from source/slides + site_tpl.html (paths inside are from the original workspace)
   site_tpl.html   the slideshow shell: navigation, animations, phone view, music volume
   make_pdf_thumbs.py  renders thumbs/ and the PDF with Playwright
@@ -35,7 +35,7 @@ Everything is static. There is no install or build step.
 
 ## Slides
 
-1 Cover · 2–3 Problem and solution · 4–5 Audience and persona · 6 Scope (390px, one hand) · 7 User flow · 8–13 Design system (colour, type, mascot direction, rationale, emotion system) · 14 HTML prototype · 15–16 References · 17 Figma screens · 18 Live app · 19–20 Bonus challenges · 21–24 Reflection · 25 Final app in hand · 26 What's next · 27 Thank you (video with music and QR code).
+1 Cover · 2–3 Problem and solution · 4–5 Audience and persona · 6 Scope (390px, one hand) · 7 User flow · 8–13 Design system (colour, type, mascot direction, rationale, emotion system) · 14 HTML prototype · 15–16 References · 17 Figma screens · 18 Live app · 19 New screens (Profile, Calendar, Settings) · 20–21 Bonus challenges · 22–26 Reflection (skills, hurdles, fixes after testing, concept to final) · 27 Final app in hand · 28 What's next · 29 Thank you (video with music and QR code).
 
 The cover has a "Project links" row: live app, Figma, user flow (FigJam), HTML prototype, Dribbble reference.
 
