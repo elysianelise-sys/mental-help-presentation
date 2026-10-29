@@ -33,21 +33,16 @@ button{touch-action:manipulation}
 #ui-count{min-width:64px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px}
 #ui #ui-count{width:auto;min-width:64px;height:44px;padding:0 10px;border-radius:999px;font:500 13px 'JetBrains Mono',monospace;color:#2B1D25}
 #ui #ui-count[aria-expanded="true"]{background:#FCE4EC}
-#jump{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);width:max-content;max-width:calc(100vw - 24px);padding:12px;border-radius:20px;background:rgba(255,255,255,.97);box-shadow:0 12px 32px rgba(113,48,67,.22);display:flex;flex-direction:column;gap:10px}
-#jump[hidden]{display:none}
-#jump form{display:flex;align-items:center;gap:8px}
-#jump label{font:600 13px 'Plus Jakarta Sans',sans-serif;color:#713043;white-space:nowrap}
-#jump input{width:64px;height:40px;border:2px solid #F3DCE6;border-radius:12px;padding:0 8px;text-align:center;font:500 16px 'JetBrains Mono',monospace;color:#2B1D25;background:#fff;-moz-appearance:textfield}
-#jump input::-webkit-outer-spin-button,#jump input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-#jump input:focus-visible{outline:none;border-color:#E98AA8}
-#jump .go{width:auto;height:40px;padding:0 16px;border-radius:12px;background:#F29BB0;color:#713043;font:700 14px 'Plus Jakarta Sans',sans-serif}
-#jump .go:hover,#jump .go:active{background:#E98AA8}
-#jump-grid{display:grid;grid-template-columns:repeat(7,40px);gap:4px}
-#jump-grid button{width:40px;height:40px;border-radius:12px;background:#FFF0F2;font:500 13px 'JetBrains Mono',monospace;color:#713043}
-#jump-grid button:hover,#jump-grid button:active{background:#FCE4EC}
-#jump-grid button[aria-current="true"]{background:#F29BB0;font-weight:700}
 body.jumping #ui{opacity:1}
-@media (max-height:520px) and (orientation:landscape){#jump{left:auto;right:calc(100% + 10px);bottom:auto;top:50%;transform:translateY(-50%)}#jump-grid{grid-template-columns:repeat(10,34px)}#jump-grid button{width:34px;height:34px}}
+#jump{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);width:min(calc(100vw - 24px),860px);max-height:min(68vh,560px);overflow:auto;overscroll-behavior:contain;padding:12px;border-radius:20px;background:rgba(255,255,255,.97);box-shadow:0 12px 32px rgba(113,48,67,.22)}
+#jump[hidden]{display:none}
+#jump-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+#ui #jump-grid button{position:relative;width:auto;height:auto;padding:0;border-radius:10px;overflow:hidden;background:#FFF0F2;border:2px solid transparent;aspect-ratio:16/9;display:block}
+#ui #jump-grid button:hover,#ui #jump-grid button:active{border-color:#F9D5DE}
+#ui #jump-grid button[aria-current="true"]{border-color:#E98AA8;box-shadow:0 0 0 2px #F9D5DE}
+#jump-grid img{display:block;width:100%;height:100%;object-fit:cover}
+#jump-grid .num{position:absolute;left:5px;bottom:5px;min-width:22px;padding:2px 6px;border-radius:999px;background:rgba(43,29,37,.72);color:#fff;font:500 11px/1.3 'JetBrains Mono',monospace;text-align:center}
+@media (max-height:520px) and (orientation:landscape){#jump{left:auto;right:calc(100% + 10px);bottom:auto;top:50%;transform:translateY(-50%);width:min(60vw,640px);max-height:88vh}#jump-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}}
 body.idle #ui{opacity:0}
 
 /* music volume (shown on the video slide) */
@@ -114,11 +109,11 @@ section.on .a.drift{animation:aPop .9s cubic-bezier(.2,.8,.2,1) both,aDrift 7s e
 </div>
 <nav id="ui" aria-label="Slide controls">
 <button id="ui-prev" aria-label="Previous slide">‹</button>
-<button id="ui-count" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="jump" title="Go to slide (G)" aria-label="Slide number. Open the go-to-slide menu">1 / 1</button>
+<button id="ui-count" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="jump" title="All slides (G)" aria-label="Slide number. Open the slide menu">1 / 1</button>
 <button id="ui-next" aria-label="Next slide">›</button>
 <button id="ui-fs" aria-label="Full screen" title="Full screen (F)">⤢</button>
 <button id="ui-all" aria-label="Back to all slides" title="All slides">☰</button>
-<div id="jump" role="dialog" aria-label="Go to slide" hidden><form novalidate><label for="jump-in">Go to slide</label><input id="jump-in" type="number" inputmode="numeric" min="1" step="1" autocomplete="off"><button class="go" type="submit">Go</button></form><div id="jump-grid"></div></div>
+<div id="jump" role="dialog" aria-label="Go to slide" hidden><div id="jump-grid"></div></div>
 </nav>
 <div id="feed">
 <header id="hint"><span class="ph" aria-hidden="true"></span><span><b>Mental Help · Project presentation</b>Turn your phone sideways to present. Tap a slide to open it.</span></header>
@@ -220,22 +215,23 @@ svol.addEventListener('input',()=>{vol=parseFloat(svol.value);muted=vol===0;
   if(actx&&actx.state==='suspended')actx.resume().catch(()=>{});
   applyVol();try{localStorage.setItem('mh-vol',String(vol))}catch(e){} wake();});
 ['click','touchstart','touchend','pointerdown','keydown'].forEach(ev=>snd.addEventListener(ev,e=>e.stopPropagation()));
-// ---------- jump to a slide ----------
-const jumpEl=document.getElementById('jump'), jumpIn=document.getElementById('jump-in'), jumpGrid=document.getElementById('jump-grid'), cntBtn=document.getElementById('ui-count');
-jumpIn.max=n; jumpIn.placeholder='1-'+n;
-for(let k=0;k<n;k++){const b=document.createElement('button');b.type='button';b.textContent=k+1;b.setAttribute('aria-label','Go to slide '+(k+1));
+// ---------- jump to a slide (thumbnail menu) ----------
+const jumpEl=document.getElementById('jump'), jumpGrid=document.getElementById('jump-grid'), cntBtn=document.getElementById('ui-count');
+for(let k=0;k<n;k++){const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Go to slide '+(k+1));
+  b.innerHTML=`<img src="thumbs/${k+1}.jpg" alt="" loading="lazy" decoding="async" width="960" height="540"><span class="num">${k+1}</span>`;
   b.addEventListener('click',e=>{e.stopPropagation();closeJump();go(k);wake();});jumpGrid.appendChild(b);}
 function jumpOpen(){return !jumpEl.hidden}
 function openJump(){if(feed)return;jumpEl.hidden=false;cntBtn.setAttribute('aria-expanded','true');document.body.classList.add('jumping');
   [...jumpGrid.children].forEach((b,k)=>b.setAttribute('aria-current',k===i?'true':'false'));
-  jumpIn.value=i+1;jumpIn.focus();jumpIn.select();}
+  const cur=jumpGrid.children[i];if(cur){cur.scrollIntoView({block:'center'});cur.focus({preventScroll:true});}}
 function closeJump(){if(!jumpOpen())return;jumpEl.hidden=true;cntBtn.setAttribute('aria-expanded','false');document.body.classList.remove('jumping');wake();}
 function toggleJump(){jumpOpen()?closeJump():openJump();}
-jumpEl.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const v=parseInt(jumpIn.value);
-  if(!(v>=1))return; closeJump(); go(Math.min(n,v)-1);});
 ['click','touchstart','touchend','pointerdown'].forEach(ev=>jumpEl.addEventListener(ev,e=>e.stopPropagation()));
-document.addEventListener('pointerdown',e=>{if(jumpOpen()&&!e.target.closest('#ui'))closeJump();});
-jumpEl.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Escape'){e.preventDefault();closeJump();cntBtn.focus();}});
+let jumpSwallow=false;
+document.addEventListener('pointerdown',e=>{if(jumpOpen()&&!e.target.closest('#ui')){closeJump();jumpSwallow=true;setTimeout(()=>jumpSwallow=false,400);}});
+jumpEl.addEventListener('keydown',e=>{e.stopPropagation();
+  if(e.key==='Escape'){e.preventDefault();closeJump();cntBtn.focus();}
+  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const b=[...jumpGrid.children],k=b.indexOf(document.activeElement);if(k>=0)b[Math.max(0,Math.min(n-1,k+(e.key==='ArrowRight'?1:-1)))].focus();}});
 btn('ui-count',toggleJump);
 
 addEventListener('resize',()=>fit());
@@ -264,7 +260,7 @@ stage.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.c
 stage.addEventListener('touchmove',e=>{if(sx==null)return;const t=e.touches[0];if(Math.abs(t.clientX-sx)>12||Math.abs(t.clientY-sy)>12)moved=true;},{passive:true});
 stage.addEventListener('touchend',e=>{if(sx==null)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;sx=null;
   if(moved&&Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){go(dx<0?i+1:i-1);}},{passive:true});
-stage.addEventListener('click',e=>{if(e.target.closest('a'))return;if(moved){moved=false;return;}
+stage.addEventListener('click',e=>{if(jumpSwallow){jumpSwallow=false;return;}if(e.target.closest('a'))return;if(moved){moved=false;return;}
   if(e.clientX<innerWidth*0.3)go(i-1);else go(i+1);wake();});
 
 let t;const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;

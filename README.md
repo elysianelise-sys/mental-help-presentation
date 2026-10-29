@@ -10,7 +10,7 @@ The UI/UX project presentation for **Mental Help** by Elise, as an animated web 
 - Arrow keys, Space or a click move between slides; swipe on a phone. **F** = full screen.
 - Each slide animates in when you arrive. The last slide plays the ending video with music (volume control bottom-left).
 - On a phone held upright, the slides become a scrollable list; tap one to open it, turn sideways to present.
-- **Jump to a slide:** tap the "1 / 29" counter (or press **G**), then type a slide number and press Enter, or tap a number in the grid. Esc closes it.
+- **Jump to a slide:** tap the "1 / 29" counter (or press **G**) to open a menu of slide previews, then click one to go there. Esc closes it.
 - `#12` at the end of the link opens slide 12.
 
 ## What is in this repo
