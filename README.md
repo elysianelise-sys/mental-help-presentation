@@ -17,7 +17,7 @@ The UI/UX project presentation for **Mental Help** by Elise, as an animated web 
 
 ```
 index.html        the whole slideshow (29 slides, navigation, animations, phone layout)
-assets/           images, icons, photos and the ending video (5085ea1900-qr2.mp4)
+assets/           images, icons, photos and the ending video (ending-v18.mp4)
 thumbs/           light pictures of each slide, used for the phone list view
 vercel.json       static deploy settings
 exports/          PDF of the deck, the ending video (MP4), the QR code PNG, the 15s showreel

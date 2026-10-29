@@ -40,7 +40,7 @@ def asset(i):
     else: shutil.copy(src,OUT+dst)
     used[i]=dst; return dst
 
-COVER_LINKS=[('Progressive assessment','https://docs.google.com/presentation/d/1q6ZNFLUIUtkx79pPJolDO1bx1efU1P__xwaQKM0NXd8/edit','#F29BB0'),
+COVER_LINKS=[('Progressive assessment','https://docs.google.com/presentation/d/1q6ZNFLUIUtkx79pPJolDO1bx1efU1P__xwaQKM0NXd8/edit?usp=sharing','#F29BB0'),
  ('Figma','https://www.figma.com/design/AUItTBis7M5o89P9dCcskv','#C9A9E6'),
  ('Dribbble','https://dribbble.com/shots/27716037-Mental-Health-Mobile-App','#A99FE0')]
 def cover_links():
