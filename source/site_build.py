@@ -42,8 +42,8 @@ def asset(i):
 
 COVER_LINKS=[('Live app','https://mental-help-alpha.vercel.app','#F29BB0'),
  ('Figma','https://www.figma.com/design/AUItTBis7M5o89P9dCcskv','#C9A9E6'),
- ('User flow','https://www.figma.com/board/XrMVrKUKm70fdkMmBLDdpO','#F6BC9C'),
- ('Prototype','https://claude.ai/artifact/EG9PRkzDAikf4u6a7vBzou','#E98AA8'),
+ ('User flow','https://www.figma.com/design/AUItTBis7M5o89P9dCcskv/Assignment-2-Deliverables?node-id=460-2','#F6BC9C'),
+ ('Prototype','https://www.figma.com/design/AUItTBis7M5o89P9dCcskv/Assignment-2-Deliverables?node-id=456-59','#E98AA8'),
  ('Dribbble','https://dribbble.com/shots/27716037-Mental-Health-Mobile-App','#A99FE0')]
 def cover_links():
     chips=''.join(f'<a target="_blank" rel="noopener" href="{u}" style="display:flex;align-items:center;gap:9px;padding:9px 18px 9px 13px;border-radius:999px;background:linear-gradient(180deg,#FFFFFF 0%,#FDF0F5 100%);border:2px solid #FFFFFF;border-bottom:4px solid #EBC3D3;font-size:20px;font-weight:700;color:#2B1D25;white-space:nowrap"><span style="width:12px;height:12px;border-radius:50%;background:{c};flex:none"></span>{t}<span style="color:#9B5C78;font-weight:700">↗</span></a>' for t,u,c in COVER_LINKS)

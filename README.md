@@ -38,14 +38,14 @@ Everything is static. There is no install or build step.
 
 1 Cover · 2–3 Problem and solution · 4–5 Audience and persona · 6 Scope (390px, one hand) · 7 User flow · 8–13 Design system (colour, type, mascot direction, rationale, emotion system) · 14 HTML prototype · 15–16 References · 17 Figma screens · 18 Live app · 19 New screens (Profile, Calendar, Settings) · 20–21 Bonus challenges · 22–26 Reflection (skills, hurdles, fixes after testing, concept to final) · 27 Final app in hand · 28 What's next · 29 Thank you (video with music and QR code).
 
-The cover has a "Project links" row: live app, Figma, user flow (FigJam), HTML prototype, Dribbble reference.
+The cover has a "Project links" row: live app, Figma, user flow (Figma), HTML prototype, Dribbble reference.
 
 ## Links used in the deck
 
 - Live app: https://mental-help-alpha.vercel.app
 - Figma screens: https://www.figma.com/design/AUItTBis7M5o89P9dCcskv
-- User flow (FigJam): https://www.figma.com/board/XrMVrKUKm70fdkMmBLDdpO
-- HTML prototype (Claude artifact): https://claude.ai/artifact/EG9PRkzDAikf4u6a7vBzou
+- User flow (Figma): https://www.figma.com/design/AUItTBis7M5o89P9dCcskv/Assignment-2-Deliverables?node-id=460-2
+- Prototype (Figma): https://www.figma.com/design/AUItTBis7M5o89P9dCcskv/Assignment-2-Deliverables?node-id=456-59
 - Dribbble reference: https://dribbble.com/shots/27716037-Mental-Health-Mobile-App
 - Original Claude Slides deck: https://claude.ai/artifact/VNuk7dUBtVHGg7JgJ56QkR
 
