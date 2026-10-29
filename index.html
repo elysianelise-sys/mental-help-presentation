@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F3DDE8">
+<title>Mental Help – Project Presentation</title>
+<meta name="description" content="Mental Help – a mobile-first mental wellness web app. UI/UX project presentation by Elise.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#F3DDE8;font-family:'Plus Jakarta Sans',Arial,sans-serif;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+a{color:inherit;text-decoration:none}
+ul{padding-left:1.2em}
+button{touch-action:manipulation}
+
+/* ---------- deck (one slide at a time) ---------- */
+#stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(113,48,67,.18);touch-action:manipulation}
+.card{position:absolute;inset:0;display:none}
+.card.live{display:block}
+.card.cur{z-index:1}
+.card>section{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:block;opacity:0;transition:opacity .45s ease}
+.card>section.on{opacity:1}
+/* enlarge the tap target of links inside slides */
+.card a{position:relative;z-index:2}
+.card a::after{content:"";position:absolute;inset:-18px -40px}
+
+#ui{position:fixed;left:50%;bottom:max(18px,calc(env(safe-area-inset-bottom,0px) + 12px));transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:5px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 8px 24px rgba(113,48,67,.16);font:600 14px 'Plus Jakarta Sans',sans-serif;color:#2B1D25;transition:opacity .3s;z-index:5}
+#ui button{width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:#713043;font:700 22px/1 'Plus Jakarta Sans',sans-serif;cursor:pointer;display:grid;place-items:center}
+#ui button:hover,#ui button:active{background:#FCE4EC}
+#ui button:focus-visible{outline:2px solid #E98AA8;outline-offset:1px}
+#ui-count{min-width:64px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px}
+body.idle #ui{opacity:0}
+
+/* music volume (shown on the video slide) */
+#snd{position:fixed;left:max(16px,calc(env(safe-area-inset-left,0px) + 12px));bottom:max(18px,calc(env(safe-area-inset-bottom,0px) + 12px));display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 8px 24px rgba(113,48,67,.16);z-index:5;transition:opacity .3s}
+#snd[hidden]{display:none!important}
+body.feed #snd{display:none!important}
+#snd button{width:44px;height:44px;border:0;border-radius:50%;background:#FCE4EC;color:#713043;display:grid;place-items:center;cursor:pointer;touch-action:manipulation}
+#snd button svg{width:22px;height:22px}
+#snd button:focus-visible,#snd input:focus-visible{outline:2px solid #E98AA8;outline-offset:2px}
+#snd label{font:600 13px 'Plus Jakarta Sans',sans-serif;color:#713043;white-space:nowrap}
+#snd input{-webkit-appearance:none;appearance:none;width:120px;height:6px;border-radius:999px;background:linear-gradient(90deg,#E98AA8 var(--v,70%),#F3DCE6 var(--v,70%));outline:none;touch-action:none}
+#snd input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #E98AA8;box-shadow:0 2px 6px rgba(113,48,67,.25)}
+#snd input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid #E98AA8}
+body.idle #snd{opacity:0}
+@media (max-height:520px) and (orientation:landscape){#snd{bottom:max(10px,env(safe-area-inset-bottom,0px));padding-right:10px}#snd label{display:none}#snd input{width:90px}}
+@media (max-height:520px) and (orientation:landscape){
+  #ui{left:auto;right:max(6px,calc(env(safe-area-inset-right,0px) - 4px));top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;gap:2px;padding:4px;background:rgba(255,255,255,.8)}
+  #ui-count{min-width:0;font-size:10px;writing-mode:horizontal-tb;padding:2px 0}
+}
+#bar{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,#F29BB0,#C9A9E6);transition:width .4s;z-index:5}
+#ui-all{display:none!important}
+body.forced #ui-all{display:grid!important}
+
+/* ---------- phone held upright: light list of slide pictures ---------- */
+#feed{display:none}
+body.feed{background:#FBE9F0}
+body.feed #stage,body.feed #ui,body.feed #bar{display:none}
+body.feed #feed{display:block;position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:linear-gradient(180deg,#FBE9F0 0%,#F1E6FA 100%);padding:0 max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+#hint{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:12px;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px))) 16px;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 14px;background:#FFF6F9;border-bottom:1px solid #F3DCE6;font:600 14px/1.35 'Plus Jakarta Sans',sans-serif;color:#6E5462}
+#hint b{display:block;font:700 18px 'Bricolage Grotesque',sans-serif;color:#2B1D25}
+#hint .ph{flex:none;width:22px;height:36px;border:2.5px solid #E98AA8;border-radius:6px;animation:rot 2.4s ease-in-out infinite}
+@keyframes rot{0%,30%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+#list{display:flex;flex-direction:column;gap:14px;list-style:none;padding:0}
+#list button{touch-action:pan-y;position:relative;display:block;width:100%;aspect-ratio:16/9;max-width:100%;border:0;padding:0;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(113,48,67,.14);cursor:zoom-in}
+#list img{display:block;width:100%;height:100%;object-fit:cover}
+#list .num{position:absolute;left:10px;top:8px;font:600 11px 'JetBrains Mono',monospace;color:#713043;background:rgba(255,255,255,.88);padding:2px 8px;border-radius:999px}
+#links{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+#links a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#713043;font:700 14px 'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 14px rgba(113,48,67,.12)}
+
+/* ---------- build-in animations ---------- */
+section .a{animation:none}
+section.on .a{animation:aIn .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*70ms + 120ms)}
+section.on .a.pop{animation-name:aPop}
+section.on .a.fade{animation:aFade 1.4s ease both;animation-delay:calc(var(--i)*40ms)}
+section.on .a.float{animation:aPop .8s cubic-bezier(.2,.8,.2,1) both,aBob 4.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*70ms + 120ms),calc(var(--i)*70ms + 1s)}
+section.on .a.drift{animation:aPop .9s cubic-bezier(.2,.8,.2,1) both,aDrift 7s ease-in-out infinite alternate;animation-delay:calc(var(--i)*70ms + 120ms),calc(var(--i)*70ms + 1.2s)}
+@keyframes aIn{from{opacity:0;translate:0 34px}}
+@keyframes aPop{from{opacity:0;translate:0 40px;scale:.9}}
+@keyframes aFade{from{opacity:0}}
+@keyframes aBob{from{translate:0 0;rotate:0deg}to{translate:0 -14px;rotate:4deg}}
+@keyframes aDrift{from{translate:0 0}to{translate:0 -10px}}
+@media (prefers-reduced-motion:reduce){section .a{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<main id="stage" aria-live="polite">
+<section id="cover" data-transition="fade" style="background:linear-gradient(135deg, #F9DCE6 0%, #F6E1EC 45%, #E9DDF7 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<div style="position:absolute;left:40px;top:120px;width:1860px;height:950px;border-radius:80px;background:radial-gradient(ellipse at 50% 55%, rgba(143,72,91,0.28) 0%, rgba(143,72,91,0.12) 45%, rgba(143,72,91,0) 70%)"></div>
+<div style="position:absolute;left:98px;top:76px;width:1760px;height:960px;border-radius:32px;background:linear-gradient(135deg, #F7B9CE 0%, #E9A6C6 45%, #C9B2EE 100%)"></div>
+<div style="position:absolute;left:80px;top:56px;width:1760px;height:960px;border-radius:32px;border:2px solid #FFFFFF;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 30%, #FDEFF4 100%);overflow:hidden">
+<div style="position:relative;width:1760px;height:130px">
+<div style="position:absolute;left:0px;top:0px;width:1760px;height:60px;background:linear-gradient(180deg, #F9E3EC 0%, #F4D9E5 100%)"></div>
+<div style="position:absolute;left:28px;top:22px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #FFD6E0 0%, #F29BB0 60%, #D9768F 100%)"></div>
+<div style="position:absolute;left:54px;top:22px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #FFF4D6 0%, #FFD3B0 60%, #F2A983 100%)"></div>
+<div style="position:absolute;left:80px;top:22px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #F4EEFF 0%, #D9C3EE 60%, #A9A2DE 100%)"></div>
+<div style="position:absolute;left:124px;top:12px;width:320px;height:48px;display:flex;align-items:center;gap:12px;padding:0px 20px;background:#FFFAFC;border-radius:16px 16px 0px 0px">
+<div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 34% 28%, #FFFFFF 0%, #F7C6D4 50%, #D9C3EE 100%)"></div>
+<p style="flex:1;font-size:20px;font-weight:600;color:#2B1D25">Mental Help</p>
+<p style="font-size:20px;color:#9B5C78">✕</p>
+</div>
+<p style="position:absolute;left:466px;top:16px;width:40px;font-size:26px;color:#B98AA0">+</p>
+<div style="position:absolute;left:0px;top:60px;width:1760px;height:68px;background:#FFFAFC;border-bottom:1px solid #F3DCE6"></div>
+<p style="position:absolute;left:32px;top:74px;width:36px;font-size:30px;color:#9B5C78">←</p>
+<p style="position:absolute;left:78px;top:74px;width:36px;font-size:30px;color:#D3B3C3">→</p>
+<p style="position:absolute;left:124px;top:72px;width:36px;font-size:30px;color:#9B5C78">↻</p>
+<div style="position:absolute;left:180px;top:72px;width:1180px;height:46px;display:flex;align-items:center;gap:12px;padding:0px 22px;border-radius:999px;background:linear-gradient(180deg, #F9E1EA 0%, #FCEEF3 100%);border:1px solid #F0D2DE;border-top:2px solid #E8C3D3">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#8F485B;width:20px;height:20px;flex:none"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+<p style="font-size:22px;color:#2B1D25"><a target="_blank" rel="noopener" href="https://mental-help-alpha.vercel.app">mental-help-alpha.vercel.app</a></p>
+</div>
+<svg aria-label="Mouse cursor" width="34" height="46" viewBox="0 0 34 46" style="position:absolute;left:566px;top:100px"><path d="M3 3 L3 37 L12 29 L18 43 L24 40 L18 27 L30 27 Z" fill="#FFFFFF" stroke="#2B1D25" stroke-width="2.6" stroke-linejoin="round"></path></svg>
+<p style="position:absolute;left:1384px;top:74px;width:36px;font-size:28px;color:#C77A9E">☆</p>
+<div style="position:absolute;left:1680px;top:76px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 34% 28%, #FFF4D6 0%, #FFD3B0 55%, #F2A983 100%)"></div>
+</div>
+<div style="position:relative;width:1760px;height:830px">
+<div style="position:absolute;left:96px;top:32px;width:1568px;height:64px;display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:14px">
+<div style="width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 32% 26%, #FFFFFF 0%, #F7C6D4 45%, #C9A9E6 100%)"></div>
+<p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;color:#2B1D25">Mental Help</p>
+</div>
+<div style="display:flex;gap:44px">
+<p style="font-size:24px;font-weight:700;color:#2B1D25;border-bottom:3px solid #F29BB0;padding-bottom:4px">Check-in</p>
+<p style="font-size:24px;font-weight:600;color:#6E5462">Calm</p>
+<p style="font-size:24px;font-weight:600;color:#6E5462">Explore</p>
+<p style="font-size:24px;font-weight:600;color:#6E5462">Sessions</p>
+</div>
+<p style="font-size:24px;font-weight:700;color:#2B1D25;background:linear-gradient(180deg, #FFFFFF 0%, #FCE4EC 100%);border:2px solid #FFFFFF;border-bottom:6px solid #E9A6C6;padding:12px 30px;border-radius:999px">By Elise</p>
+</div>
+<div style="position:absolute;left:96px;top:170px;width:900px;display:flex;flex-direction:column;align-items:start;gap:30px">
+<div style="display:flex;align-items:center;gap:10px;background:linear-gradient(180deg, #FFFFFF 0%, #FCEAF0 100%);border:1px solid #F0D2DE;border-bottom:4px solid #EBC3D3;padding:10px 22px;border-radius:999px"><div style="width:12px;height:12px;border-radius:50%;background:#E9879F"></div><p style="font-size:22px;font-weight:600;color:#9B5C78">UI/UX project · Mobile-first web app</p></div>
+<h1 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:148px;font-weight:800;line-height:0.95;letter-spacing:-4px;color:#2B1D25;text-shadow:0 5px 0 #F29BB0, 0 10px 0 #D9C3EE">Mental Help</h1>
+<p style="font-size:36px;line-height:1.4;color:#6E5462;width:760px">Notice how you feel, then do one small thing that helps.</p>
+<div style="display:flex;gap:28px">
+<div style="width:236px;display:flex;flex-direction:column;gap:2px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF1E6 100%);border:2px solid #FFFFFF;border-bottom:8px solid #F6BC9C;border-radius:24px;padding:18px 24px"><p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:44px;font-weight:700;color:#2B1D25">6</p><p style="font-size:22px;color:#6E5462">feelings to pick</p></div>
+<div style="width:236px;display:flex;flex-direction:column;gap:2px;background:linear-gradient(180deg, #FFFFFF 0%, #FDE6EE 100%);border:2px solid #FFFFFF;border-bottom:8px solid #EFA2BB;border-radius:24px;padding:18px 24px"><p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:44px;font-weight:700;color:#2B1D25">12s</p><p style="font-size:22px;color:#6E5462">breathing cycle</p></div>
+<div style="width:236px;display:flex;flex-direction:column;gap:2px;background:linear-gradient(180deg, #FFFFFF 0%, #F1EAFC 100%);border:2px solid #FFFFFF;border-bottom:8px solid #C7B6EC;border-radius:24px;padding:18px 24px"><p style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:44px;font-weight:700;color:#2B1D25">10 min</p><p style="font-size:22px;color:#6E5462">calm audio</p></div>
+</div>
+</div>
+<div style="position:absolute;left:1020px;top:100px;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle at 50% 50%, rgba(233,135,159,0.42) 0%, rgba(201,178,238,0.28) 45%, rgba(255,246,249,0) 70%)"></div>
+<div style="position:absolute;left:1470px;top:120px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle at 30% 24%, #FFFFFF 0%, #FFE9C8 16%, #FFD3B0 45%, #F49C8A 82%, #E2869C 100%)"></div>
+<div style="position:absolute;left:1010px;top:660px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 30% 24%, #FFFFFF 0%, #EDE5FF 16%, #D6CBF2 48%, #A99FE0 82%, #9A86D2 100%)"></div>
+<div style="position:absolute;left:1650px;top:430px;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 24%, #FFFFFF 0%, #FCE0E8 20%, #F7C6D4 50%, #E6A1C4 100%)"></div>
+<div style="position:absolute;left:1200px;top:170px;width:330px;height:645px">
+<div style="position:absolute;left:20px;right:20px;top:120px;bottom:-40px;border-radius:60px;background:radial-gradient(ellipse at 50% 50%, rgba(143,72,91,0.34) 0%, rgba(143,72,91,0.15) 42%, rgba(143,72,91,0) 70%)"></div>
+<img src="assets/4f8ae36ff0.png" alt="The live Mental Help Home screen in an iPhone" style="position:absolute;left:0px;top:0px;width:330px;height:645px;object-fit:contain">
+</div>
+<div style="position:absolute;left:1000px;top:340px;width:340px;height:132px;border-radius:28px;background:linear-gradient(135deg, #F7B9CE 0%, #D7C2F0 100%);transform:translate(10px, 10px)"></div>
+<div style="position:absolute;left:1000px;top:340px;width:340px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF4F8 100%);border:2px solid #FFFFFF;border-radius:28px;padding:22px 24px">
+<p style="font-size:22px;font-weight:700;color:#2B1D25">How are you feeling?</p>
+<div style="display:flex;gap:12px">
+<div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 24%, #FFFFFF 0%, #FFE9C8 18%, #FFD3B0 48%, #F49C8A 100%)"></div>
+<div style="width:56px;height:56px;border-radius:50%;border:4px solid #F29BB0;background:radial-gradient(circle at 30% 24%, #FFFFFF 0%, #FCE0E8 18%, #F7C6D4 50%, #C9A9E6 100%)"></div>
+<div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 24%, #FFFFFF 0%, #F4EDF0 20%, #E4D6DC 52%, #BFA8B4 100%)"></div>
+<div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 24%, #FFFFFF 0%, #EDE5FF 18%, #D6CBF2 50%, #A99FE0 100%)"></div>
+</div>
+</div>
+<div style="position:absolute;left:1440px;top:500px;width:290px;height:136px;border-radius:28px;background:linear-gradient(135deg, #FFD3B0 0%, #F29BB0 100%);transform:translate(10px, 10px)"></div>
+<div style="position:absolute;left:1440px;top:500px;width:290px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF4F8 100%);border:2px solid #FFFFFF;border-radius:28px;padding:22px 24px">
+<p style="font-size:20px;font-weight:600;color:#9B5C78">Guided Calm · 10 min</p>
+<p style="font-size:26px;font-weight:800;color:#2B1D25">Breathe in · 4s</p>
+<div style="height:12px;border-radius:999px;background:#FCE2E7"><div style="width:40%;height:12px;border-radius:999px;background:linear-gradient(90deg, #F29BB0 0%, #C9A9E6 100%)"></div></div>
+</div>
+<div style="position:absolute;left:1470px;top:716px;display:flex;align-items:center;gap:10px;background:linear-gradient(180deg, #FFFFFF 0%, #F3EDFC 100%);border:2px solid #FFFFFF;border-bottom:6px solid #C7B6EC;padding:12px 22px;border-radius:999px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#713043;width:22px;height:22px;flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><p style="font-size:22px;font-weight:700;color:#2B1D25">Mood saved</p>
+</div>
+</div>
+</div>
+
+<div style="position:absolute;left:176px;top:893px;width:1080px;display:flex;flex-direction:column;gap:10px"><p style="font-size:16px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#9B5C78">Project links</p><div style="display:flex;flex-wrap:wrap;gap:10px"><a target="_blank" rel="noopener" href="https://mental-help-alpha.vercel.app" style="display:flex;align-items:center;gap:9px;padding:9px 18px 9px 13px;border-radius:999px;background:linear-gradient(180deg,#FFFFFF 0%,#FDF0F5 100%);border:2px solid #FFFFFF;border-bottom:4px solid #EBC3D3;font-size:20px;font-weight:700;color:#2B1D25;white-space:nowrap"><span style="width:12px;height:12px;border-radius:50%;background:#F29BB0;flex:none"></span>Live app<span style="color:#9B5C78;font-weight:700">↗</span></a><a target="_blank" rel="noopener" href="https://www.figma.com/design/AUItTBis7M5o89P9dCcskv" style="display:flex;align-items:center;gap:9px;padding:9px 18px 9px 13px;border-radius:999px;background:linear-gradient(180deg,#FFFFFF 0%,#FDF0F5 100%);border:2px solid #FFFFFF;border-bottom:4px solid #EBC3D3;font-size:20px;font-weight:700;color:#2B1D25;white-space:nowrap"><span style="width:12px;height:12px;border-radius:50%;background:#C9A9E6;flex:none"></span>Figma<span style="color:#9B5C78;font-weight:700">↗</span></a><a target="_blank" rel="noopener" href="https://www.figma.com/board/XrMVrKUKm70fdkMmBLDdpO" style="display:flex;align-items:center;gap:9px;padding:9px 18px 9px 13px;border-radius:999px;background:linear-gradient(180deg,#FFFFFF 0%,#FDF0F5 100%);border:2px solid #FFFFFF;border-bottom:4px solid #EBC3D3;font-size:20px;font-weight:700;color:#2B1D25;white-space:nowrap"><span style="width:12px;height:12px;border-radius:50%;background:#F6BC9C;flex:none"></span>User flow<span style="color:#9B5C78;font-weight:700">↗</span></a><a target="_blank" rel="noopener" href="https://claude.ai/artifact/EG9PRkzDAikf4u6a7vBzou" style="display:flex;align-items:center;gap:9px;padding:9px 18px 9px 13px;border-radius:999px;background:linear-gradient(180deg,#FFFFFF 0%,#FDF0F5 100%);border:2px solid #FFFFFF;border-bottom:4px solid #EBC3D3;font-size:20px;font-weight:700;color:#2B1D25;white-space:nowrap"><span style="width:12px;height:12px;border-radius:50%;background:#E98AA8;flex:none"></span>Prototype<span style="color:#9B5C78;font-weight:700">↗</span></a><a target="_blank" rel="noopener" href="https://dribbble.com/shots/27716037-Mental-Health-Mobile-App" style="display:flex;align-items:center;gap:9px;padding:9px 18px 9px 13px;border-radius:999px;background:linear-gradient(180deg,#FFFFFF 0%,#FDF0F5 100%);border:2px solid #FFFFFF;border-bottom:4px solid #EBC3D3;font-size:20px;font-weight:700;color:#2B1D25;white-space:nowrap"><span style="width:12px;height:12px;border-radius:50%;background:#A99FE0;flex:none"></span>Dribbble<span style="color:#9B5C78;font-weight:700">↗</span></a></div></div>
+</section>
+<section id="problem" data-transition="fade" style="background:linear-gradient(135deg, #fde6de 0%, #fadce8 50%, #ede0f8 100%)">
+  <p style="position:absolute; top:780.06px; left:0; width:1920px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:330px; font-weight:800; line-height:1; letter-spacing:-12px; text-align:center; white-space:nowrap; color:#ffffff99">STRESS</p>
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">01</p>
+  <p style="position:absolute; top:80px; left:330px; width:1150px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Problem statement</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1150px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Stress builds up quietly</h2>
+  <div style="position:absolute; top:230px; left:720px; width:640px; height:640px; display:flex; flex-direction:column; background:radial-gradient(#e9879f59 0%, #e9879f2b 40%, #e9879f00 70%); border-radius:256px">
+  </div>
+  <img src="assets/4aab8dd57a.png" alt="" style="position:absolute; top:270px; left:1180px; width:150px; height:150px; object-fit:contain">
+  <img src="assets/9c9ecc658f.png" alt="" style="position:absolute; bottom:128px; left:36.97px; width:130px; height:130px; object-fit:contain">
+  <img src="assets/c1099fe116.png" alt="" style="position:absolute; top:300px; left:690px; width:110px; height:110px; object-fit:contain">
+  <img src="assets/bbd5c49200.png" alt="The live Mental Help Home screen on an iPhone" style="position:absolute; top:280px; left:820px; width:400px; height:702px; object-fit:contain">
+  <div style="position:absolute; top:330px; left:128px; width:620px; display:flex; flex-direction:column; gap:12px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="width:64px; height:64px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:linear-gradient(135deg, #f7b9ce 0%, #e98aa8 100%); border-bottom:4px solid #71304340; border-radius:20px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:33px; height:33px; color:#ffffff;flex:none"><path d="M12 3.5L2.5 20h19z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.3" r=".6" fill="currentColor"/></svg>
+    </div>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">The problem</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Everyday stress, overthinking and poor sleep build up quietly. Most people don’t check in with their feelings until it gets heavy.</p>
+  </div>
+  <div style="position:absolute; top:650px; left:128px; width:620px; display:flex; flex-direction:column; gap:12px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="width:64px; height:64px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:linear-gradient(135deg, #dccbf6 0%, #a99fe0 100%); border-bottom:4px solid #71304340; border-radius:20px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:33px; height:33px; color:#ffffff;flex:none"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 19.5c.8-3.4 3.4-5.5 6.5-5.5s5.7 2.1 6.5 5.5"/><path d="M16 5.2a3.4 3.4 0 0 1 0 6.6M18 14.4c1.8.8 3 2.6 3.5 5.1"/></svg>
+    </div>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Who has it</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Students and young working adults who juggle study, work and family. They want support, but they are not in crisis.</p>
+  </div>
+  <div style="position:absolute; top:420px; left:1290px; width:502px; display:flex; flex-direction:column; gap:12px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="width:64px; height:64px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:linear-gradient(135deg, #ffd9bc 0%, #f49c8a 100%); border-bottom:4px solid #71304340; border-radius:20px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:33px; height:33px; color:#ffffff;flex:none"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+    </div>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">When it happens</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">At night when thoughts race, before a stressful task, or after a long day. These moments leave only a few minutes to spare.</p>
+  </div>
+  <div style="position:absolute; top:800px; left:1260px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #ffd9cf 22%, #f6b3a6 55%, #cf7488 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">Stress · 67</p>
+  </div>
+  <div style="position:absolute; top:300px; left:1340px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #eae2ff 22%, #d6cbf2 55%, #958ad6 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">Thoughts racing</p>
+  </div>
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">02</p>
+  
+</section>
+<section id="solution" data-transition="fade" style="background:linear-gradient(135deg, #fdeef3 0%, #fae4ee 50%, #f0e6fa 100%)">
+  <p style="position:absolute; top:770px; left:264.25px; width:1920px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:330px; font-weight:800; line-height:1; letter-spacing:-12px; white-space:nowrap; color:#ffffff99">CHOICES</p>
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">01</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Problem statement</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Too slow to help</h2>
+  <div style="position:absolute; top:250px; left:760px; width:520px; height:700px; display:flex; flex-direction:column; background:radial-gradient(#c9a9e659 0%, #c9a9e62b 40%, #c9a9e600 70%); border-radius:256px">
+  </div>
+  <img src="assets/4a45fe9ad3.png" alt="" style="position:absolute; top:221.32px; left:670px; width:130px; height:123px; object-fit:contain">
+  <img src="assets/8606b2fc95.png" alt="" style="position:absolute; top:770px; left:1090px; width:110px; height:110px; object-fit:contain">
+  <div style="position:absolute; top:270px; left:128px; width:600px; display:flex; flex-direction:column; gap:10px; padding:28px; background:#ffffff8c; border:2px solid #ffffff; border-radius:32px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#9b5c78">Current alternatives</p>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">How people cope now</h3>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffff99; border:1px solid #f0d2de; border-radius:20px">
+      <p style="width:36px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#c9a0b3">✕</p>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.3; color:#6e5462">Scrolling social media to switch off</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffff99; border:1px solid #f0d2de; border-radius:20px">
+      <p style="width:36px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#c9a0b3">✕</p>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.3; color:#6e5462">Journaling apps with long forms</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffff99; border:1px solid #f0d2de; border-radius:20px">
+      <p style="width:36px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#c9a0b3">✕</p>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.3; color:#6e5462">Meditation apps with huge libraries and paywalls</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffff99; border:1px solid #f0d2de; border-radius:20px">
+      <p style="width:36px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#c9a0b3">✕</p>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.3; color:#6e5462">Waiting weeks for a therapy appointment</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffff99; border:1px solid #f0d2de; border-radius:20px">
+      <p style="width:36px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#c9a0b3">✕</p>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.3; color:#6e5462">Doing nothing until the stress builds up</p>
+    </div>
+  </div>
+  <img src="assets/422bb978d9.png" alt="The live Mental Help Calm screen on an iPhone" style="position:absolute; top:290px; left:800px; width:330px; height:646px; object-fit:contain">
+  <div style="position:absolute; top:270px; left:1180px; width:612px; display:flex; flex-direction:column; gap:10px; padding:28px; background:linear-gradient(160deg, #fcd9e4 0%, #f6c7da 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#713043">Proposed solution</p>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">How Mental Help does it better</h3>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffffbf; border-radius:20px">
+      <div style="width:36px; height:36px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:#f29bb0; border-radius:256px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px; color:#ffffff;flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; line-height:1.3; color:#2b1d25">A one-tap check-in with six feelings</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffffbf; border-radius:20px">
+      <div style="width:36px; height:36px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:#f29bb0; border-radius:256px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px; color:#ffffff;flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; line-height:1.3; color:#2b1d25">A breathing orb that slows your breath</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffffbf; border-radius:20px">
+      <div style="width:36px; height:36px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:#f29bb0; border-radius:256px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px; color:#ffffff;flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; line-height:1.3; color:#2b1d25">Short guided audio with rain sounds</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffffbf; border-radius:20px">
+      <div style="width:36px; height:36px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:#f29bb0; border-radius:256px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px; color:#ffffff;flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; line-height:1.3; color:#2b1d25">Therapist sessions booked in a few taps</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:14px; align-items:center; padding:12px 18px; background:#ffffffbf; border-radius:20px">
+      <div style="width:36px; height:36px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:#f29bb0; border-radius:256px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px; color:#ffffff;flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <p style="flex:1; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; line-height:1.3; color:#2b1d25">A weekly mood view with your streak</p>
+    </div>
+  </div>
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">03</p>
+  
+</section>
+<section id="audience" data-transition="fade" style="background:linear-gradient(135deg, #f6eefd 0%, #fbe6f0 55%, #fdede6 100%)">
+  <p style="position:absolute; bottom:0; left:calc(50% - 159.55px); width:1920px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:330px; font-weight:800; line-height:1; letter-spacing:-12px; text-align:center; white-space:nowrap; color:#ffffff99; transform:translateX(-50%)">AUDIENCE</p>
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">02</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Target audience</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Quick support, young adults</h2>
+  <div style="position:absolute; top:230px; left:1360px; width:520px; height:760px; display:flex; flex-direction:column; background:radial-gradient(#e9879f59 0%, #e9879f2b 40%, #e9879f00 70%); border-radius:256px">
+  </div>
+  <div style="position:absolute; top:250px; left:128px; width:396px; height:440px; display:flex; flex-direction:column; gap:14px; align-items:start; padding:22px 22px 26px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="position:relative; width:352px; height:190px; display:flex; flex-direction:column; background:linear-gradient(160deg, #dccbf6 0%, #a99fe0 100%); border-radius:24px">
+      <img src="assets/e77ac89156.png" alt="" style="position:absolute; top:20px; left:90px; width:170px; height:150px; object-fit:contain">
+    </div>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">University students</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Exam stress, late nights and poor sleep.</p>
+    <p style="padding:6px 16px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#2b1d25; background:#fdecf1; border-radius:256px">About 18–24</p>
+  </div>
+  <div style="position:absolute; top:250px; left:548px; width:396px; height:440px; display:flex; flex-direction:column; gap:14px; align-items:start; padding:22px 22px 26px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="position:relative; width:352px; height:190px; display:flex; flex-direction:column; background:linear-gradient(160deg, #f7b9ce 0%, #e98aa8 100%); border-radius:24px">
+      <img src="assets/c23d660e4c.png" alt="" style="position:absolute; top:20px; left:100px; width:150px; height:150px; object-fit:contain">
+      <img src="assets/64d4506a7e.png" alt="" style="position:absolute; top:80px; left:220px; width:100px; height:100px; object-fit:contain">
+    </div>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Young professionals</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Work pressure and overthinking after hours.</p>
+    <p style="padding:6px 16px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#2b1d25; background:#fdecf1; border-radius:256px">About 23–35</p>
+  </div>
+  <div style="position:absolute; top:250px; left:968px; width:396px; height:440px; display:flex; flex-direction:column; gap:14px; align-items:start; padding:22px 22px 26px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="position:relative; width:352px; height:190px; display:flex; flex-direction:column; background:linear-gradient(160deg, #ffd9bc 0%, #f49c8a 100%); border-radius:24px">
+      <img src="assets/1a59b9e832.png" alt="" style="position:absolute; top:20px; left:100px; width:150px; height:150px; object-fit:contain">
+      <img src="assets/4a45fe9ad3.png" alt="" style="position:absolute; top:80px; left:220px; width:100px; height:100px; object-fit:contain">
+    </div>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">New to therapy</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Curious about therapy, but unsure where to start.</p>
+    <p style="padding:6px 16px; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#2b1d25; background:#fdecf1; border-radius:256px">Any age</p>
+  </div>
+  <div style="position:absolute; top:730px; left:128px; width:610px; height:170px; display:flex; flex-direction:row; gap:20px; align-items:center; padding:30px 34px; background:linear-gradient(160deg, #fff1f5 0%, #fcdde7 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:column; gap:6px; flex:1">
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#713043">Built for</p>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#2b1d25">Everyday stress, sleep and overthinking</p>
+    </div>
+    <div style="width:96px; height:52px; display:flex; flex-direction:row; align-items:center; justify-content:end; padding:6px; background:#f29bb0; border-radius:256px">
+      <div style="width:40px; height:40px; display:flex; flex-direction:column; background:#ffffff; border-radius:256px">
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute; top:730px; left:768px; width:610px; height:170px; display:flex; flex-direction:row; gap:20px; align-items:center; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:column; gap:6px; flex:1">
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#9b5c78">Not built for</p>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#2b1d25">Crisis care or medical diagnosis</p>
+    </div>
+    <div style="width:96px; height:52px; display:flex; flex-direction:row; align-items:center; padding:6px; background:#e6d9df; border-radius:256px">
+      <div style="width:40px; height:40px; display:flex; flex-direction:column; background:#ffffff; border-radius:256px">
+      </div>
+    </div>
+  </div>
+  <img src="assets/998920f428.png" alt="The live Mental Help Profile screen on an iPhone" style="position:absolute; top:250px; left:1440px; width:352px; height:612px; object-fit:contain">
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">04</p>
+  
+</section>
+<section id="persona" data-transition="fade" style="background:linear-gradient(135deg, #fdeef3 0%, #fae4ee 50%, #f0e6fa 100%)">
+  <p id="e2-1x19hyr" style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">02</p>
+  <p id="e3-1x19hyr" style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Target audience · Persona board</p>
+  <h2 id="e4-1x19hyr" style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Meet Samantha</h2>
+  <div id="e5-1x19hyr" style="position:absolute; top:240px; left:80px; width:640px; height:720px; display:flex; flex-direction:column; background:radial-gradient(#e9879f59 0%, #e9879f2b 40%, #e9879f00 70%); border-radius:256px">
+  </div>
+  <div id="e6-1x19hyr" style="position:absolute; top:250px; left:128px; width:540px; height:680px; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="position:relative; width:220px; height:220px; display:flex; flex-direction:column">
+      <div style="position:absolute; top:0; left:0; width:220px; height:220px; display:flex; flex-direction:column; background:linear-gradient(135deg, #f7b9ce 0%, #c9a9e6 100%); border-radius:256px">
+      </div>
+      <img src="assets/b1f823a975.jpg" alt="Portrait of Samantha, the persona" style="position:absolute; top:10px; left:10px; width:200px; height:200px; border-radius:256px">
+      <img src="assets/4a45fe9ad3.png" alt="" style="position:absolute; top:150px; left:160px; width:70px; height:66px; object-fit:contain">
+    </div>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:44px; font-weight:700; line-height:1.15; color:#2b1d25">Samantha, 26</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Junior marketing executive</p>
+    <div style="display:flex; flex-direction:row; gap:10px">
+      <div style="display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+        <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #fcdde7 22%, #f7c6d4 55%, #bfa0e3 100%); border-radius:256px">
+        </div>
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; white-space:nowrap; color:#2b1d25">Phone-first</p>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+        <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #ffe1be 22%, #ffc9a4 55%, #f49c8a 100%); border-radius:256px">
+        </div>
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; white-space:nowrap; color:#2b1d25">Busy weekdays</p>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; padding:20px 24px; background:#f9d5de; border-radius:28px 28px 28px 8px">
+      <p style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:28px; font-style:italic; line-height:1.35; color:#2b1d25">“I know I should look after my mind. I just never find the time.”</p>
+    </div>
+  </div>
+  <div id="e7-1x19hyr" style="position:absolute; top:250px; left:708px; width:532px; height:328px; display:flex; flex-direction:column; gap:14px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:row; gap:16px; align-items:center">
+      <img src="assets/8606b2fc95.png" alt="" style="width:64px; height:64px; object-fit:contain">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Goals</h3>
+    </div>
+    <ul style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.5; color:#6e5462">
+      <li>Notice her mood each day</li>
+      <li>Wind down before sleep</li>
+      <li>Try therapy without hassle</li>
+    </ul>
+  </div>
+  <div id="e8-1x19hyr" style="position:absolute; top:250px; left:1260px; width:532px; height:328px; display:flex; flex-direction:column; gap:14px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:row; gap:16px; align-items:center">
+      <img src="assets/9c9ecc658f.png" alt="" style="width:64px; height:64px; object-fit:contain">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Frustrations</h3>
+    </div>
+    <ul style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.5; color:#6e5462">
+      <li>Meditation apps feel overwhelming</li>
+      <li>Journaling forms take too long</li>
+      <li>Therapy prices are unclear</li>
+    </ul>
+  </div>
+  <div id="e9-1x19hyr" style="position:absolute; top:602px; left:708px; width:532px; height:328px; display:flex; flex-direction:column; gap:14px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:row; gap:16px; align-items:center">
+      <img src="assets/c1099fe116.png" alt="" style="width:64px; height:64px; object-fit:contain">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Daily habits</h3>
+    </div>
+    <ul style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.5; color:#6e5462">
+      <li>Checks her phone between meetings</li>
+      <li>Has 2–5 minute gaps in her day</li>
+      <li>Listens to audio in bed</li>
+    </ul>
+  </div>
+  <div id="e10-1x19hyr" style="position:absolute; top:602px; left:1260px; width:532px; height:328px; display:flex; flex-direction:column; gap:14px; padding:30px 34px; background:linear-gradient(160deg, #fff1f5 0%, #fcdde7 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:row; gap:16px; align-items:center">
+      <img src="assets/4a45fe9ad3.png" alt="" style="width:64px; height:61px; object-fit:contain">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">What she needs</h3>
+    </div>
+    <ul style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.5; color:#2b1d25">
+      <li>A one-tap check-in</li>
+      <li>Breathing that paces her</li>
+      <li>Clear prices, quick booking</li>
+    </ul>
+  </div>
+  <p id="e11-1x19hyr" style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">05</p>
+  
+</section>
+<section id="scope" data-transition="fade" style="background:linear-gradient(135deg, #f6eefd 0%, #fbe6f0 55%, #fdede6 100%)">
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">02</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Scope · Chosen breakpoint</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Made for one hand</h2>
+  <div style="position:absolute; top:220px; left:640px; width:640px; height:780px; display:flex; flex-direction:column; background:radial-gradient(#e9879f59 0%, #e9879f2b 40%, #e9879f00 70%); border-radius:256px">
+  </div>
+  <div style="position:absolute; top:290px; left:128px; width:470px; display:flex; flex-direction:column; gap:14px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#9b5c78">Breakpoint</p>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:34px; font-weight:700; line-height:1.15; color:#2b1d25">Mobile-first web app</h3>
+    <p style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:140px; font-weight:800; line-height:1; letter-spacing:-4px; color:#2b1d25">390<span style="color:#e98aa8">px</span></p>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Design width. Bigger screens show a centred 430px column.</p>
+  </div>
+  <img src="assets/fd30c62648.png" alt="The live Mental Help Home screen on an iPhone" style="position:absolute; top:300px; left:760px; width:360px; height:705px; object-fit:contain">
+  <div style="position:absolute; top:266px; left:774px; width:332px; height:4px; display:flex; flex-direction:column; background:#e98aa8; border-radius:2px">
+  </div>
+  <div style="position:absolute; top:226px; left:868px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#2b1d25; border:2px solid #ffffff; border-radius:256px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#ffffff">390px</p>
+  </div>
+  <div id="e10-1grj6qz" style="position:absolute; top:720px; left:640px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #fcdde7 22%, #f7c6d4 55%, #bfa0e3 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">Thumb zone</p>
+  </div>
+  <div id="e11-1grj6qz" style="position:absolute; top:250px; left:1180px; width:612px; display:flex; flex-direction:row; gap:20px; align-items:center; padding:22px 26px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="width:56px; padding:10px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:26px; font-weight:500; text-align:center; color:#ffffff; background:linear-gradient(135deg, #f7b9ce 0%, #e98aa8 100%); border-radius:18px">01</p>
+    <div style="display:flex; flex-direction:column; gap:4px; flex:1">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:28px; font-weight:700; line-height:1.15; color:#2b1d25">Thumb reach</h3>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.35; color:#6e5462">Five tabs sit in a bottom bar. Save and Buy Now sit in the lower half.</p>
+    </div>
+  </div>
+  <div id="e12-1grj6qz" style="position:absolute; top:432px; left:1180px; width:612px; display:flex; flex-direction:row; gap:20px; align-items:center; padding:22px 26px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="width:56px; padding:10px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:26px; font-weight:500; text-align:center; color:#ffffff; background:linear-gradient(135deg, #dccbf6 0%, #a99fe0 100%); border-radius:18px">02</p>
+    <div style="display:flex; flex-direction:column; gap:4px; flex:1">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:28px; font-weight:700; line-height:1.15; color:#2b1d25">Touch targets</h3>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.35; color:#6e5462">Every tap area is at least 44×44px, even when the icon looks smaller.</p>
+    </div>
+  </div>
+  <div id="e13-1grj6qz" style="position:absolute; top:614px; left:1180px; width:612px; display:flex; flex-direction:row; gap:20px; align-items:center; padding:22px 26px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="width:56px; padding:10px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:26px; font-weight:500; text-align:center; color:#ffffff; background:linear-gradient(135deg, #ffd9bc 0%, #f49c8a 100%); border-radius:18px">03</p>
+    <div style="display:flex; flex-direction:column; gap:4px; flex:1">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:28px; font-weight:700; line-height:1.15; color:#2b1d25">One column</h3>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.35; color:#6e5462">Cards stack top to bottom, so there is one clear path down the screen.</p>
+    </div>
+  </div>
+  <div id="e14-1grj6qz" style="position:absolute; top:796px; left:1180px; width:612px; display:flex; flex-direction:row; gap:20px; align-items:center; padding:22px 26px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="width:56px; padding:10px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:26px; font-weight:500; text-align:center; color:#ffffff; background:linear-gradient(135deg, #e9a6c6 0%, #b0668a 100%); border-radius:18px">04</p>
+    <div style="display:flex; flex-direction:column; gap:4px; flex:1">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:28px; font-weight:700; line-height:1.15; color:#2b1d25">Calm to read</h3>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.35; color:#6e5462">Large type, AA contrast and a reduce-motion setting in Profile.</p>
+    </div>
+  </div>
+  <p id="e15-1grj6qz" style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">06</p>
+  
+</section>
+<section id="userflow" data-transition="fade" style="background:linear-gradient(135deg, #FDEEF3 0%, #FAE4EE 50%, #F0E6FA 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:0px;top:400px;width:1920px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:330px;font-weight:800;line-height:1;letter-spacing:-12px;color:rgba(255,255,255,0.6);text-align:center;white-space:nowrap">FLOW</p>
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">03</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">User flow</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">Five goals, one Home</h2>
+<p style="position:absolute;left:1440px;top:140px;width:352px;font-size:26px;font-weight:700;color:#713043;background:#F9D5DE;border-bottom:5px solid #F2B3C8;padding:14px 28px;border-radius:999px;text-align:center"><a target="_blank" rel="noopener" href="https://www.figma.com/board/XrMVrKUKm70fdkMmBLDdpO">Open in FigJam →</a></p>
+<div style="position:absolute;left:128px;top:250px;width:1664px;height:730px;display:flex;flex-direction:column;background:#FFFAFC;border:2px solid #FFFFFF;border-bottom:8px solid #E9B7CB;border-radius:32px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;height:64px;padding:0px 24px;background:linear-gradient(180deg, #FBE9F0 0%, #F6DDE8 100%);border-bottom:1px solid #F0D2DE">
+<div style="width:16px;height:16px;border-radius:50%;background:#F29BB0"></div>
+<div style="width:16px;height:16px;border-radius:50%;background:#FFD3B0"></div>
+<div style="width:16px;height:16px;border-radius:50%;background:#D9C3EE"></div>
+<p style="flex:1;font-size:24px;font-weight:600;color:#2B1D25;text-align:center">Mental Help · User flow</p>
+<p style="font-size:24px;color:#9B5C78">FigJam</p>
+</div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;background:#ECECEC;padding:16px">
+<img src="assets/c2d2ff744e.png" alt="User flow: Open app, Home, then a choice of five goals. Log mood: Check-in, pick feeling and tags, save, mood saved. Relax: Calm, play and breathe, feel calmer. Browse: Explore, search or filter, tap Begin, then Calm. Book: Sessions, choose days, Buy Now, confirm, booked in. Settings: Profile, change settings, saved." style="width:1600px;height:560px;object-fit:contain">
+</div>
+<div style="display:flex;justify-content:center;gap:16px;padding:14px 24px;background:#FFFAFC;border-top:1px solid #F0D2DE">
+<div style="display:flex;align-items:center;gap:10px;background:#F9D5DE;border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:600;color:#2B1D25;white-space:nowrap">Screen</p>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:#FFFFFF;border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:600;color:#2B1D25;white-space:nowrap">Step</p>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:#FCE6EC;border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:600;color:#2B1D25;white-space:nowrap">Choice</p>
+</div>
+<div style="display:flex;align-items:center;gap:10px;background:#F29BB0;border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:600;color:#2B1D25;white-space:nowrap">Goal reached</p>
+</div>
+</div>
+</div>
+<img src="assets/97dc846a79.png" alt="" style="position:absolute;left:1740px;top:900px;width:110px;height:110px;object-fit:contain">
+<img src="assets/d9854bc48b.png" alt="" style="position:absolute;left:60px;top:190px;width:120px;height:120px;object-fit:contain">
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">07</p>
+
+</section>
+<section id="colours" data-transition="fade" style="background:linear-gradient(135deg, #FDE6DE 0%, #FADCE8 50%, #EDE0F8 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">04</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Design system · Colour</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">Soft blush, deep rose</h2>
+<div style="position:absolute;left:128px;top:260px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #FFF8F8;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Background</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#FFF8F8</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">page</p>
+</div>
+<div style="position:absolute;left:390px;top:260px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #FFF0F2;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Blush</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#FFF0F2</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">pills</p>
+</div>
+<div style="position:absolute;left:652px;top:260px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #FCE2E7;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Petal</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#FCE2E7</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">borders</p>
+</div>
+<div style="position:absolute;left:914px;top:260px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #F29BB0;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Primary pink</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#F29BB0</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">buttons</p>
+</div>
+<div style="position:absolute;left:128px;top:590px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #8F485B;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Deep rose</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#8F485B</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">links</p>
+</div>
+<div style="position:absolute;left:390px;top:590px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #713043;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Wine</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#713043</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">on pink</p>
+</div>
+<div style="position:absolute;left:652px;top:590px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #725667;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Plum</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#725667</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">stress</p>
+</div>
+<div style="position:absolute;left:914px;top:590px;width:240px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:16px 16px 20px">
+<div style="height:150px;border-radius:24px;background:linear-gradient(160deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 45%), #26181B;border:1px solid rgba(113,48,67,0.12);border-bottom:8px solid rgba(43,29,37,0.18)"></div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:28px;font-weight:700;line-height:1.15;color:#2B1D25">Ink</h3>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">#26181B</p>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">headings</p>
+</div>
+<div style="position:absolute;left:1210px;top:260px;width:582px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:30px 34px">
+<p style="font-size:24px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#9B5C78">Contrast fix</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Same button, two text colours</h3>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFF6F9;border-radius:24px;padding:22px">
+<p style="font-size:30px;font-weight:700;color:#FFFFFF;background:#F29BB0;padding:20px 0px;border-radius:999px;text-align:center;border-bottom:6px solid #E07F9B">Save Check-In →</p>
+<div style="display:flex;justify-content:space-between"><p style="font-size:26px;color:#6E5462">White on pink</p><p style="font-size:26px;font-weight:700;color:#C0506A">2.08:1 · Fails</p></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFF6F9;border-radius:24px;padding:22px">
+<p style="font-size:30px;font-weight:700;color:#713043;background:#F29BB0;padding:20px 0px;border-radius:999px;text-align:center;border-bottom:6px solid #E07F9B">Save Check-In →</p>
+<div style="display:flex;justify-content:space-between"><p style="font-size:26px;color:#6E5462">Wine on pink</p><p style="font-size:26px;font-weight:700;color:#3E7A55">4.57:1 · Passes AA</p></div>
+</div>
+</div>
+<img src="assets/97dc846a79.png" alt="" style="position:absolute;left:1700px;top:200px;width:120px;height:120px;object-fit:contain">
+<img src="assets/b411f50ec3.png" alt="" style="position:absolute;left:1120px;top:880px;width:90px;height:90px;object-fit:contain">
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">08</p>
+
+</section>
+<section id="type" data-transition="fade" style="background:linear-gradient(135deg, #f6eefd 0%, #fbe6f0 55%, #fdede6 100%)">
+  <p style="position:absolute; top:400px; left:0; width:1920px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:360px; font-weight:800; line-height:1; letter-spacing:-12px; text-align:center; white-space:nowrap; color:#ffffff99">Aa</p>
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">04</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Design system · Type &amp; components</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">One typeface, five sizes</h2>
+  <div style="position:absolute; top:260px; left:128px; width:400px; height:540px; display:flex; flex-direction:column; gap:14px; padding:30px 34px; background:linear-gradient(160deg, #ffffff 0%, #fce6ee 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:210px; font-weight:800; line-height:1; letter-spacing:-6px; color:#2b1d25">Aa</p>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:30px; font-weight:700; line-height:1.15; color:#2b1d25">Plus Jakarta Sans</h3>
+    <p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#6e5462">Shown enlarged</p>
+    <div style="display:flex; flex-direction:row; flex-wrap:wrap; gap:10px">
+      <p style="padding:6px 14px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:400; color:#2b1d25; background:#fdecf1; border-radius:12px">Regular</p>
+      <p style="padding:6px 14px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; color:#2b1d25; background:#fdecf1; border-radius:12px">Bold</p>
+      <p style="padding:6px 14px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:800; color:#2b1d25; background:#fdecf1; border-radius:12px">ExtraBold</p>
+    </div>
+  </div>
+  <div style="position:absolute; top:260px; left:560px; width:660px; height:540px; display:flex; flex-direction:column; gap:16px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:column; gap:2px; padding:0 0 14px; border-bottom:1px solid #f3dce6">
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; color:#9b5c78">Display · 32/40 Bold</p>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.15; white-space:nowrap; color:#2b1d25">Mental Help</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:2px; padding:0 0 14px; border-bottom:1px solid #f3dce6">
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; color:#9b5c78">Greeting · 28/36 ExtraBold</p>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:52px; font-weight:800; line-height:1.15; white-space:nowrap; color:#2b1d25">Hello, Samantha</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:2px; padding:0 0 14px; border-bottom:1px solid #f3dce6">
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; color:#9b5c78">Card title · 22 ExtraBold</p>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:40px; font-weight:800; line-height:1.15; white-space:nowrap; color:#2b1d25">Keep your head up.</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:2px; padding:0 0 14px; border-bottom:1px solid #f3dce6">
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; color:#9b5c78">Body · 14/20 Regular</p>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:400; line-height:1.15; white-space:nowrap; color:#2b1d25">A tranquil headspace, breathing easily.</p>
+    </div>
+  </div>
+  <div style="position:absolute; top:260px; left:1252px; width:540px; height:540px; display:flex; flex-direction:column; gap:24px; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#9b5c78">Components</p>
+    <div style="display:flex; flex-direction:row">
+      <p style="padding:20px 40px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:30px; font-weight:700; color:#713043; background:#f29bb0; border-bottom:6px solid #e07f9b; border-radius:256px">Save Check-In →</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:12px">
+      <p style="padding:10px 24px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:600; color:#713043; background:#f29bb0; border-radius:256px">Sleep</p>
+      <p style="padding:10px 24px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:600; color:#524346; background:#fff0f2; border:1px solid #fce2e7; border-radius:256px">Work</p>
+      <p style="padding:10px 24px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:600; color:#524346; background:#fff0f2; border:1px solid #fce2e7; border-radius:256px">Family</p>
+    </div>
+    <div style="display:flex; flex-direction:row; gap:12px">
+      <div style="width:96px; display:flex; flex-direction:column; align-items:center; padding:12px; background:#fff0f2; border-radius:16px">
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:32px; font-weight:700; color:#524346">3</p>
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:400; color:#6e5462">Days</p>
+      </div>
+      <div style="width:96px; display:flex; flex-direction:column; align-items:center; padding:12px; background:#ffffff; border:3px solid #f29bb0; border-radius:16px">
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:32px; font-weight:800; color:#26181b">4</p>
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; color:#8f485b">Days</p>
+      </div>
+      <div style="width:96px; display:flex; flex-direction:column; align-items:center; padding:12px; background:#fff0f2; border-radius:16px">
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:32px; font-weight:700; color:#524346">5</p>
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:400; color:#6e5462">Days</p>
+      </div>
+    </div>
+  </div>
+  <img src="assets/8606b2fc95.png" alt="" style="position:absolute; top:190px; left:1712px; width:110px; height:110px; object-fit:contain">
+  <img src="assets/1a59b9e832.png" alt="" style="position:absolute; top:779.05px; left:72.02px; width:130px; height:116px; object-fit:contain">
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">09</p>
+  
+</section>
+<section id="direction" data-transition="fade" style="background:linear-gradient(135deg, #FDE6DE 0%, #FADCE8 50%, #EDE0F8 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:0px;top:720px;width:1920px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:340px;font-weight:800;line-height:1;letter-spacing:-12px;color:rgba(255,255,255,0.75);text-align:center;white-space:nowrap">MASCOT</p>
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">04</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Design system · Creative direction</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">Make the mascot breathe, not pose</h2>
+<div style="position:absolute;left:128px;top:280px;width:492px;display:flex;flex-direction:column;gap:16px;background:rgba(255,255,255,0.8);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:30px 34px">
+<div style="position:relative;height:300px;border-radius:28px;background:#FDECF1">
+<img src="assets/11a7771af8.png" alt="The soft vinyl cloud mascot" style="position:absolute;left:70px;top:60px;width:300px;height:213px;object-fit:contain">
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:36px;font-weight:700;line-height:1.15;color:#2B1D25">A · Refined Soft Vinyl</h3>
+<p style="font-size:26px;line-height:1.4;color:#6E5462">A premium art-toy cloud. Great for stills, but every state needs a new render.</p>
+</div>
+<div style="position:absolute;left:1300px;top:280px;width:492px;display:flex;flex-direction:column;gap:16px;background:rgba(255,255,255,0.8);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:30px 34px">
+<div style="position:relative;height:300px;border-radius:28px;background:#FDECF1">
+<svg aria-label="Hand-drawn cloud line over a pink wash" width="300" height="225" viewBox="0 0 200 150" style="position:absolute;left:70px;top:38px"><ellipse cx="104" cy="80" rx="58" ry="44" fill="#F9C9D6" opacity="0.75"></ellipse><path d="M58 92c-14-2-18-22-4-28 2-18 26-24 36-12 8-14 34-12 38 6 18-2 26 20 12 30-2 14-20 18-30 10-10 10-34 10-40-2-6 4-12 0-12-4z" fill="none" stroke="#7A3F5C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M84 80q4 4 8 0M106 80q4 4 8 0" fill="none" stroke="#7A3F5C" stroke-width="2" stroke-linecap="round"></path><path d="M40 120q30 8 60 0t60 0" fill="none" stroke="#7A3F5C" stroke-width="1.4" stroke-linecap="round" opacity="0.6"></path></svg>
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:36px;font-weight:700;line-height:1.15;color:#2B1D25">C · Warm Editorial Line</h3>
+<p style="font-size:26px;line-height:1.4;color:#6E5462">Hand-drawn ink over watercolour. Very human, but hard to animate and common in journal apps.</p>
+</div>
+<div style="position:absolute;left:652px;top:246px;width:616px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(180deg, #FFFFFF 0%, #FCE6EE 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F0D2DE;border-radius:32px;padding:30px 34px;border:3px solid #F7C6D4;border-bottom:8px solid #F2B3C8">
+<div style="position:relative;height:340px;background:radial-gradient(ellipse at 50% 55%, rgba(233,135,159,0.45) 0%, rgba(217,195,238,0.3) 45%, rgba(253,236,241,1) 72%);border-radius:28px">
+<img src="assets/97dc846a79.png" alt="The chosen breathing orb" style="position:absolute;left:150px;top:30px;width:280px;height:280px;object-fit:contain">
+<p style="position:absolute;left:22px;top:22px;width:150px;font-size:26px;font-weight:700;color:#FFFFFF;background:#E98AA8;padding:6px 0px;border-radius:999px;text-align:center">Chosen</p>
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:42px;font-weight:700;line-height:1.15;color:#2B1D25">B · Breathing Light</h3>
+<p style="font-size:28px;line-height:1.4;color:#6E5462">A frosted orb lit from inside. Drawn in code, so it breathes with the audio and scales from logo to hero.</p>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">10</p>
+
+</section>
+<section id="principles" data-transition="fade" style="background:linear-gradient(135deg, #f6eefd 0%, #fbe6f0 55%, #fdede6 100%)">
+  <p style="position:absolute; top:779.16px; left:50%; width:1920px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:330px; font-weight:800; line-height:1; letter-spacing:-12px; text-align:center; white-space:nowrap; color:#ffffff99; transform:translateX(-50%)">GENERIC</p>
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">04</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Design system · Rationale</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Why the old mascot felt generic</h2>
+  <div style="position:absolute; top:260px; left:128px; width:1100px; height:660px; display:flex; flex-direction:column; background:linear-gradient(160deg, #ffffff 0%, #f8e9f0 100%); border:2px solid #ffffff; border-radius:48px">
+  </div>
+  <div style="position:absolute; top:330px; left:330px; width:700px; height:520px; display:flex; flex-direction:column; background:radial-gradient(#c9a9e659 0%, #c9a9e62b 40%, #c9a9e600 70%); border-radius:256px">
+  </div>
+  <img src="assets/11a7771af8.png" alt="The old 3D cloud mascot" style="position:absolute; top:420px; left:380px; width:600px; height:426px; object-fit:contain">
+  <div style="position:absolute; top:320px; left:180px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #ffd9cf 22%, #f6b3a6 55%, #cf7488 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">“Kawaii 3D” AI look</p>
+  </div>
+  <div style="position:absolute; top:360px; left:760px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #eae2ff 22%, #d6cbf2 55%, #958ad6 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">One grin for every moment</p>
+  </div>
+  <div style="position:absolute; top:820px; left:230px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #e6dbe1 22%, #cdbfc7 55%, #8e7484 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">Avatars in four styles</p>
+  </div>
+  <div style="position:absolute; top:260px; left:1268px; width:524px; height:660px; display:flex; flex-direction:column; gap:16px; justify-content:center; padding:30px 34px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#9b5c78">What I found</p>
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:36px; font-weight:700; line-height:1.15; color:#2b1d25">It looked like every other AI mascot</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">The 3D renders looked like stock images and never reacted to the user. Even the logo cloud wore the “Anxious” face.</p>
+  </div>
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">11</p>
+  
+</section>
+<section id="principles2" data-transition="fade" style="background:linear-gradient(135deg, #FDE6DE 0%, #FADCE8 50%, #EDE0F8 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">04</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Design system · Rationale</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">What I changed</h2>
+<div style="position:absolute;left:128px;top:250px;width:540px;height:470px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:30px 34px">
+<div style="height:220px;display:flex;align-items:center;justify-content:center;border-radius:28px;background:radial-gradient(ellipse at 50% 55%, rgba(233,135,159,0.3) 0%, rgba(255,246,249,1) 70%)">
+<img src="assets/97dc846a79.png" alt="" style="width:180px;height:180px;object-fit:contain">
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:34px;font-weight:700;line-height:1.15;color:#2B1D25">Show mood with form, light and speed</h3>
+<p style="font-size:26px;line-height:1.4;color:#6E5462">No cartoon face. It reads like a weather app or a smart light.</p>
+</div>
+<div style="position:absolute;left:690px;top:250px;width:540px;height:470px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #D9C3D2;border-radius:32px;padding:30px 34px">
+<div style="height:220px;display:flex;align-items:center;justify-content:center;border-radius:28px;background:radial-gradient(ellipse at 50% 55%, rgba(233,135,159,0.3) 0%, rgba(255,246,249,1) 70%)">
+<img src="assets/3b36d02c5c.png" alt="" style="width:180px;height:180px;object-fit:contain">
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:34px;font-weight:700;line-height:1.15;color:#2B1D25">One body, many states</h3>
+<p style="font-size:26px;line-height:1.4;color:#6E5462">One companion across the app, so users bond with it.</p>
+</div>
+<div style="position:absolute;left:1252px;top:250px;width:540px;height:470px;display:flex;flex-direction:column;gap:16px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F8C4A8;border-radius:32px;padding:30px 34px">
+<div style="height:220px;display:flex;align-items:center;justify-content:center;border-radius:28px;background:radial-gradient(ellipse at 50% 55%, rgba(233,135,159,0.3) 0%, rgba(255,246,249,1) 70%)">
+<img src="assets/36e89c0827.png" alt="" style="width:180px;height:180px;object-fit:contain">
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:34px;font-weight:700;line-height:1.15;color:#2B1D25">Acknowledge, then soothe</h3>
+<p style="font-size:26px;line-height:1.4;color:#6E5462">Anxious and Frustrated start fast, then slow into calm.</p>
+</div>
+<div style="position:absolute;left:128px;top:760px;width:540px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #FFF1F5 0%, #FCDDE7 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:18px 26px;flex-direction:row;align-items:center;gap:18px">
+<img src="assets/97dc846a79.png" alt="" style="width:76px;height:76px;object-fit:contain">
+<div style="flex:1;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#9B5C78">Calm</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Pacer</h3>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">leads your breath</p>
+</div>
+</div>
+<div style="position:absolute;left:690px;top:760px;width:540px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #FFF1F5 0%, #FCDDE7 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:18px 26px;flex-direction:row;align-items:center;gap:18px">
+<img src="assets/e161fbf64a.png" alt="" style="width:76px;height:76px;object-fit:contain">
+<div style="flex:1;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#9B5C78">Check-in</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Mirror</h3>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">shows your feeling</p>
+</div>
+</div>
+<div style="position:absolute;left:1252px;top:760px;width:540px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #FFF1F5 0%, #FCDDE7 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:18px 26px;flex-direction:row;align-items:center;gap:18px">
+<img src="assets/b411f50ec3.png" alt="" style="width:76px;height:76px;object-fit:contain">
+<div style="flex:1;display:flex;flex-direction:column;gap:2px">
+<p style="font-size:24px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#9B5C78">Sessions</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Companion</h3>
+<p style="font-size:24px;line-height:1.4;color:#6E5462">one orb per day</p>
+</div>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">12</p>
+
+</section>
+<section id="motion" data-transition="fade" style="background:linear-gradient(135deg, #fde6de 0%, #fadce8 50%, #ede0f8 100%)">
+  <p style="position:absolute; top:447.2px; left:0; width:1920px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:360px; font-weight:800; line-height:1; letter-spacing:-12px; text-align:center; white-space:nowrap; color:#ffffff99">FEEL</p>
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">04</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Design system · Emotion system</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">One orb, six feelings</h2>
+  <p style="position:absolute; top:200px; left:334px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#6e5462">The mascot breathes instead of posing. Each feeling changes its colour and speed.</p>
+  <img src="assets/b411f50ec3.png" alt="" style="position:absolute; top:300px; left:158px; width:200px; height:200px; object-fit:contain">
+  <div style="position:absolute; top:530px; left:128px; width:260px; display:flex; flex-direction:column; gap:4px; align-items:center">
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Joyful</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.4; color:#6e5462">2.6s · rises</p>
+  </div>
+  <img src="assets/97dc846a79.png" alt="" style="position:absolute; top:340px; left:435px; width:200px; height:200px; object-fit:contain">
+  <div style="position:absolute; top:570px; left:405px; width:260px; display:flex; flex-direction:column; gap:4px; align-items:center">
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Calm</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.4; color:#6e5462">6s · even</p>
+  </div>
+  <img src="assets/3b36d02c5c.png" alt="" style="position:absolute; top:360px; left:712px; width:200px; height:200px; object-fit:contain">
+  <div style="position:absolute; top:590px; left:682px; width:260px; display:flex; flex-direction:column; gap:4px; align-items:center">
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Neutral</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.4; color:#6e5462">8s · drifts</p>
+  </div>
+  <img src="assets/e161fbf64a.png" alt="" style="position:absolute; top:360px; left:989px; width:200px; height:200px; object-fit:contain">
+  <div style="position:absolute; top:590px; left:959px; width:260px; display:flex; flex-direction:column; gap:4px; align-items:center">
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Anxious</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.4; color:#6e5462">1.4s · then settles</p>
+  </div>
+  <img src="assets/57490a9d73.png" alt="" style="position:absolute; top:340px; left:1266px; width:200px; height:200px; object-fit:contain">
+  <div style="position:absolute; top:570px; left:1236px; width:260px; display:flex; flex-direction:column; gap:4px; align-items:center">
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Depleted</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.4; color:#6e5462">7s · sinks</p>
+  </div>
+  <img src="assets/36e89c0827.png" alt="" style="position:absolute; top:300px; left:1543px; width:200px; height:200px; object-fit:contain">
+  <div style="position:absolute; top:530px; left:1513px; width:260px; display:flex; flex-direction:column; gap:4px; align-items:center">
+    <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:32px; font-weight:700; line-height:1.15; color:#2b1d25">Frustrated</h3>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; line-height:1.4; color:#6e5462">1.8s · then settles</p>
+  </div>
+  <div style="position:absolute; top:760px; left:128px; width:1664px; display:flex; flex-direction:column; gap:12px; padding:24px 32px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="display:flex; flex-direction:row; gap:26px; align-items:center">
+      <div style="width:96px; height:96px; display:flex; flex-direction:row; align-items:center; justify-content:center; background:linear-gradient(135deg, #f7b9ce 0%, #e98aa8 100%); border-bottom:5px solid #d6708f; border-radius:256px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:44px; height:44px; color:#ffffff;flex:none"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px; flex:1">
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:2.5px; text-transform:uppercase; color:#9b5c78">Calm breathing cycle · 12 seconds</p>
+        <div style="display:flex; flex-direction:row; gap:8px">
+          <p style="flex:4; padding:14px 24px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:700; color:#2b1d25; background:#f9d5de; border-radius:256px">Breathe in · 4s</p>
+          <p style="flex:2; padding:12px 24px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:700; color:#2b1d25; background:#ffffff; border:2px solid #f3dce6; border-radius:256px">Hold · 2s</p>
+          <p style="flex:6; padding:14px 24px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:700; color:#2b1d25; background:#e6daf2; border-radius:256px">Breathe out · 6s</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">13</p>
+  
+</section>
+<section id="prototype" data-transition="fade" style="background:linear-gradient(135deg, #F6EEFD 0%, #FBE6F0 55%, #FDEDE6 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:0px;top:400px;width:1920px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:280px;font-weight:800;line-height:1;letter-spacing:-12px;color:rgba(255,255,255,0.6);text-align:center;white-space:nowrap">PROTOTYPE</p>
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">05</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">HTML prototype · Serene Blush</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">First clickable prototype</h2>
+<p style="position:absolute;left:1440px;top:140px;width:352px;font-size:26px;font-weight:700;color:#713043;background:#F9D5DE;border-bottom:5px solid #F2B3C8;padding:14px 28px;border-radius:999px;text-align:center"><a target="_blank" rel="noopener" href="https://claude.ai/artifact/EG9PRkzDAikf4u6a7vBzou">Open prototype →</a></p>
+<div style="position:absolute;left:500px;top:300px;width:920px;height:700px;border-radius:50%;background:radial-gradient(ellipse at 50% 50%, rgba(233,135,159,0.35) 0%, rgba(233,135,159,0.17) 40%, rgba(233,135,159,0) 70%)"></div>
+<img src="assets/faae4e528d.png" alt="Prototype Home screen in an iPhone mockup" style="position:absolute;left:128px;top:330px;width:320px;height:625px;object-fit:contain">
+<div style="position:absolute;left:168px;top:300px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<div style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 32% 26%, #FFFFFF 0%, #FFE1BE 22%, #FFC9A4 55%, #F49C8A 100%)"></div>
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Home</p>
+</div>
+<img src="assets/66ffebaa91.png" alt="Prototype Explore screen in an iPhone mockup" style="position:absolute;left:464px;top:280px;width:320px;height:625px;object-fit:contain">
+<div style="position:absolute;left:504px;top:250px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<div style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 32% 26%, #FFFFFF 0%, #FCDDE7 22%, #F7C6D4 55%, #BFA0E3 100%)"></div>
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Explore</p>
+</div>
+<img src="assets/10734d699a.png" alt="Prototype Check-in screen in an iPhone mockup" style="position:absolute;left:800px;top:250px;width:320px;height:625px;object-fit:contain">
+<div style="position:absolute;left:840px;top:220px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<div style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 32% 26%, #FFFFFF 0%, #EAE2FF 22%, #D6CBF2 55%, #958AD6 100%)"></div>
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Check-in</p>
+</div>
+<img src="assets/c91a77d742.png" alt="Prototype Buy Sessions screen in an iPhone mockup" style="position:absolute;left:1136px;top:280px;width:320px;height:625px;object-fit:contain">
+<div style="position:absolute;left:1176px;top:250px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<div style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 32% 26%, #FFFFFF 0%, #FFD9CF 22%, #F6B3A6 55%, #CF7488 100%)"></div>
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Buy Sessions</p>
+</div>
+<img src="assets/39b14ad993.png" alt="Prototype Calm screen in an iPhone mockup" style="position:absolute;left:1472px;top:330px;width:320px;height:625px;object-fit:contain">
+<div style="position:absolute;left:1512px;top:300px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<div style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 32% 26%, #FFFFFF 0%, #FCDDE7 22%, #F7C6D4 55%, #BFA0E3 100%)"></div>
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Calm</p>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">14</p>
+
+</section>
+<section id="references" data-transition="fade" style="background:linear-gradient(135deg, #fde6de 0%, #fadce8 50%, #ede0f8 100%)">
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">06</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">References</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Where the look started</h2>
+  <p style="position:absolute; top:1004px; left:50%; width:1000px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; text-align:center; color:#6e5462; transform:translateX(-50%)">Source: “Mental Health Mobile App” concept on Dribbble</p>
+  <p style="position:absolute; top:140px; left:1440px; width:352px; padding:14px 28px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:700; text-align:center; color:#713043; background:#f9d5de; border-bottom:5px solid #f2b3c8; border-radius:256px"><a target="_blank" rel="noopener" href="https://dribbble.com/shots/27716037-Mental-Health-Mobile-App">View on Dribbble →</a></p>
+  <div style="position:absolute; top:260px; left:380px; width:1160px; height:760px; display:flex; flex-direction:column; background:radial-gradient(#f6a98f52 0%, #f6a98f29 40%, #f6a98f00 70%); border-radius:256px">
+  </div>
+  <img src="assets/c1effe785a.png" alt="Reference Buy Sessions screen on a phone: a lilac 3D mascot, an orange day picker set to 4 days and a $59 total" style="position:absolute; top:280px; left:300px; width:410px; height:719px; object-fit:contain">
+  <img src="assets/342f8bffae.png" alt="Reference Home screen on a phone: Hello Samantha, an orange star mascot card, Weekly Mood Calm, Energy 80 and Stress 67" style="position:absolute; top:280px; left:1210px; width:410px; height:711px; object-fit:contain">
+  <img src="assets/c1c2d72b61.png" alt="Reference Explore screen on a phone: an orange gradient header and a card asking How do I stop overthinking at night?" style="position:absolute; top:240px; left:765px; width:390px; height:764px; object-fit:contain">
+  <div style="position:absolute; top:380px; left:170px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #ffe1be 22%, #ffc9a4 55%, #f49c8a 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">Buy Sessions</p>
+  </div>
+  <div style="position:absolute; top:230px; left:1110px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #ffd9cf 22%, #f6b3a6 55%, #cf7488 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">Explore</p>
+  </div>
+  <div style="position:absolute; top:380px; left:1600px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffffe6; border:2px solid #ffffff; border-radius:256px">
+    <div style="width:30px; height:30px; display:flex; flex-direction:column; background:radial-gradient(circle at 32% 26%, #ffffff 0%, #eae2ff 22%, #d6cbf2 55%, #958ad6 100%); border-radius:256px">
+    </div>
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#2b1d25">Home</p>
+  </div>
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">15</p>
+  
+</section>
+<section id="references2" data-transition="fade" style="background:linear-gradient(135deg, #F6EEFD 0%, #FBE6F0 55%, #FDEDE6 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">06</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">References</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">What I kept, and what I changed</h2>
+<div style="position:absolute;left:128px;top:250px;width:820px;height:700px;border-radius:48px;background:linear-gradient(160deg, #FFFFFF 0%, #FCE6EE 100%);border:2px solid #FFFFFF"></div>
+<div style="position:absolute;left:972px;top:250px;width:820px;height:700px;border-radius:48px;background:linear-gradient(160deg, #FFFFFF 0%, #EFE7FB 100%);border:2px solid #FFFFFF"></div>
+<p style="position:absolute;left:176px;top:290px;width:600px;font-size:24px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#713043">What I kept</p>
+<p style="position:absolute;left:1020px;top:290px;width:600px;font-size:24px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#5E4FA8">What I changed</p>
+<div style="position:absolute;left:170px;top:350px;width:736px;display:flex;align-items:center;gap:22px;background:rgba(255,255,255,0.85);border-bottom:5px solid #F2C3D3;border-radius:28px;padding:14px 22px">
+<img src="assets/8606b2fc95.png" alt="" style="width:90px;height:90px;object-fit:contain">
+<p style="flex:1;font-size:28px;font-weight:600;line-height:1.3;color:#2B1D25">A soft, friendly mascot</p>
+</div>
+<div style="position:absolute;left:170px;top:495px;width:736px;display:flex;align-items:center;gap:22px;background:rgba(255,255,255,0.85);border-bottom:5px solid #F2C3D3;border-radius:28px;padding:14px 22px">
+<img src="assets/d2fab8a063.png" alt="" style="width:90px;height:85px;object-fit:contain">
+<p style="flex:1;font-size:28px;font-weight:600;line-height:1.3;color:#2B1D25">Big rounded numbers, like 4 Days and $59</p>
+</div>
+<div style="position:absolute;left:170px;top:640px;width:736px;display:flex;align-items:center;gap:22px;background:rgba(255,255,255,0.85);border-bottom:5px solid #F2C3D3;border-radius:28px;padding:14px 22px">
+<img src="assets/b651e50ec3.png" alt="" style="width:90px;height:71px;object-fit:contain">
+<p style="flex:1;font-size:28px;font-weight:600;line-height:1.3;color:#2B1D25">A wave slider for picking days</p>
+</div>
+<div style="position:absolute;left:170px;top:785px;width:736px;display:flex;align-items:center;gap:22px;background:rgba(255,255,255,0.85);border-bottom:5px solid #F2C3D3;border-radius:28px;padding:14px 22px">
+<img src="assets/1a59b9e832.png" alt="" style="width:90px;height:81px;object-fit:contain">
+<p style="flex:1;font-size:28px;font-weight:600;line-height:1.3;color:#2B1D25">Floating cards with soft shadows</p>
+</div>
+<div style="position:absolute;left:1014px;top:350px;width:736px;display:flex;align-items:center;gap:22px;background:rgba(255,255,255,0.85);border-bottom:5px solid #CDBEF0;border-radius:28px;padding:22px 22px">
+<img src="assets/4a45fe9ad3.png" alt="" style="width:110px;height:104px;object-fit:contain">
+<p style="flex:1;font-size:30px;font-weight:600;line-height:1.3;color:#2B1D25">Orange and lilac became one blush palette</p>
+</div>
+<div style="position:absolute;left:1014px;top:540px;width:736px;display:flex;align-items:center;gap:22px;background:rgba(255,255,255,0.85);border-bottom:5px solid #CDBEF0;border-radius:28px;padding:22px 22px">
+<img src="assets/11a7771af8.png" alt="" style="width:110px;height:78px;object-fit:contain">
+<p style="flex:1;font-size:30px;font-weight:600;line-height:1.3;color:#2B1D25">The clay mascot became a breathing orb</p>
+</div>
+<div style="position:absolute;left:1014px;top:730px;width:736px;display:flex;align-items:center;gap:22px;background:rgba(255,255,255,0.85);border-bottom:5px solid #CDBEF0;border-radius:28px;padding:22px 22px">
+<img src="assets/fc1b4568b2.png" alt="" style="width:110px;height:110px;object-fit:contain">
+<p style="flex:1;font-size:30px;font-weight:600;line-height:1.3;color:#2B1D25">Added Check-in, Calm audio and Profile</p>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">16</p>
+
+</section>
+<section id="figma" data-transition="fade" style="background:linear-gradient(180deg, #fde7f0 0%, #f6cde2 50%, #e4c8f2 100%)">
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">07</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Figma screens</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Hi-fi screens in Figma</h2>
+  <p style="position:absolute; top:140px; left:1440px; width:352px; padding:14px 28px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:700; text-align:center; color:#713043; background:#ffffff; border-bottom:5px solid #f2b3c8; border-radius:256px"><a target="_blank" rel="noopener" href="https://www.figma.com/design/AUItTBis7M5o89P9dCcskv">Open in Figma →</a></p>
+  <div style="position:absolute; top:640px; left:0; width:2520px; height:1100px; display:flex; flex-direction:column; background:linear-gradient(180deg, #ffffff8c 0%, #ffffff26 40%, #ffffff00 70%); border-radius:256px">
+  </div>
+  <div style="position:absolute; top:330px; left:560px; width:800px; height:760px; display:flex; flex-direction:column; background:radial-gradient(#c978aa59 0%, #c978aa2b 40%, #c978aa00 70%); border-radius:256px">
+  </div>
+  <img src="assets/51eee5e9fe.jpg" alt="Figma Home screen" style="position:absolute; top:450px; left:429px; width:216px; height:467px; border:3px solid #ffffff; border-radius:40px; object-fit:contain">
+  <img src="assets/4a45fe9ad3.png" alt="" style="position:absolute; top:268px; left:505px; width:64px; height:61px; object-fit:contain">
+  <p style="position:absolute; top:334px; left:387px; width:300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#2b1d25">Home</p>
+  <img src="assets/0594bf130e.jpg" alt="Figma Buy Sessions screen" style="position:absolute; top:450px; left:1275px; width:216px; height:467px; border:3px solid #ffffff; border-radius:40px; object-fit:contain">
+  <img src="assets/d2fab8a063.png" alt="" style="position:absolute; top:268px; left:1351px; width:64px; height:61px; object-fit:contain">
+  <p style="position:absolute; top:334px; left:1233px; width:300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#2b1d25">Buy Sessions</p>
+  <img src="assets/6ed2637407.jpg" alt="Figma Calm screen" style="position:absolute; top:390px; left:595px; width:250px; height:541px; border:3px solid #ffffff; border-radius:40px; object-fit:contain">
+  <img src="assets/fc1b4568b2.png" alt="" style="position:absolute; top:278px; left:688px; width:64px; height:64px; object-fit:contain">
+  <p style="position:absolute; top:344px; left:570px; width:300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#2b1d25">Calm</p>
+  <img src="assets/507aa724ae.jpg" alt="Figma Explore screen" style="position:absolute; top:390px; left:1075px; width:250px; height:541px; border:3px solid #ffffff; border-radius:40px; object-fit:contain">
+  <img src="assets/8606b2fc95.png" alt="" style="position:absolute; top:278px; left:1168px; width:64px; height:64px; object-fit:contain">
+  <p style="position:absolute; top:344px; left:1050px; width:300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; text-align:center; color:#2b1d25">Explore</p>
+  <img src="assets/39121d73ce.png" alt="Figma Check-in screen on an iPhone" style="position:absolute; top:300px; left:795px; width:330px; height:646px; object-fit:contain">
+  <p style="position:absolute; top:246px; left:760px; width:400px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:36px; font-weight:700; text-align:center; color:#2b1d25">Check-in</p>
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">17</p>
+  
+</section>
+<section id="liveapp" data-transition="fade" style="background:linear-gradient(135deg, #FDEEF3 0%, #FAE4EE 50%, #F0E6FA 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:0px;top:400px;width:1920px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:360px;font-weight:800;line-height:1;letter-spacing:-12px;color:rgba(255,255,255,0.6);text-align:center;white-space:nowrap">LIVE</p>
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">08</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Built with Codex · Deployed on Vercel</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">Live on Vercel</h2>
+<div style="position:absolute;left:1180px;top:140px;width:612px;display:flex;align-items:center;gap:12px;background:#FFFFFF;border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:12px 24px;border-radius:999px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#713043;width:22px;height:22px;flex:none"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+<p style="flex:1;font-size:26px;font-weight:600;color:#2B1D25"><a target="_blank" rel="noopener" href="https://mental-help-alpha.vercel.app">mental-help-alpha.vercel.app</a></p>
+<p style="font-size:24px;font-weight:700;color:#FFFFFF;background:#3E9B6A;padding:4px 14px;border-radius:999px">Live</p>
+</div>
+<div style="position:absolute;left:300px;top:330px;width:1320px;height:700px;border-radius:50%;background:radial-gradient(ellipse at 50% 50%, rgba(233,135,159,0.35) 0%, rgba(233,135,159,0.17) 40%, rgba(233,135,159,0) 70%)"></div>
+<img src="assets/fd30c62648.png" alt="The live Mental Help Home screen on an iPhone" style="position:absolute;left:128px;top:330px;width:268px;height:525px;object-fit:contain">
+<div style="position:absolute;left:188px;top:870px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Home</p>
+</div>
+<img src="assets/e64adea542.png" alt="The live Mental Help Check-in screen on an iPhone" style="position:absolute;left:407px;top:290px;width:268px;height:525px;object-fit:contain">
+<div style="position:absolute;left:467px;top:830px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Check-in</p>
+</div>
+<img src="assets/422bb978d9.png" alt="The live Mental Help Calm screen on an iPhone" style="position:absolute;left:686px;top:260px;width:268px;height:525px;object-fit:contain">
+<div style="position:absolute;left:746px;top:800px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Calm</p>
+</div>
+<img src="assets/00cf4b6aa6.png" alt="The live Mental Help Buy Sessions screen on an iPhone" style="position:absolute;left:965px;top:260px;width:268px;height:525px;object-fit:contain">
+<div style="position:absolute;left:1025px;top:800px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Sessions</p>
+</div>
+<img src="assets/3a9c7a38dc.png" alt="The live Mental Help Explore screen on an iPhone" style="position:absolute;left:1244px;top:290px;width:268px;height:525px;object-fit:contain">
+<div style="position:absolute;left:1304px;top:830px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Explore</p>
+</div>
+<img src="assets/25683394e0.png" alt="The live Mental Help Profile screen on an iPhone" style="position:absolute;left:1523px;top:330px;width:268px;height:525px;object-fit:contain">
+<div style="position:absolute;left:1583px;top:870px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.9);border:2px solid #FFFFFF;border-bottom:5px solid #F0D2DE;padding:10px 22px 10px 14px;border-radius:999px">
+<p style="font-size:24px;font-weight:700;color:#2B1D25;white-space:nowrap">Profile</p>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">18</p>
+
+</section>
+<section id="bonus" data-transition="fade" style="background:linear-gradient(135deg, #fde6de 0%, #fadce8 50%, #ede0f8 100%)">
+  <p style="position:absolute; top:64px; left:120px; width:200px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:132px; font-weight:700; line-height:1; letter-spacing:-4px; color:#e9879f61">09</p>
+  <p style="position:absolute; top:80px; left:330px; width:1300px; font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#9b5c78">Bonus challenges</p>
+  <h2 style="position:absolute; top:118px; left:330px; width:1300px; font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:64px; font-weight:700; line-height:1.08; letter-spacing:-1.5px; color:#2b1d25">Six bonus challenges, from code to sound</h2>
+  <div style="position:absolute; top:250px; left:128px; width:700px; height:700px; display:flex; flex-direction:column; background:linear-gradient(160deg, #f9c9d9 0%, #f3b5cb 50%, #dccbf6 100%); border:2px solid #ffffff; border-radius:48px">
+  </div>
+  <div style="position:absolute; top:290px; left:170px; display:flex; flex-direction:row; gap:10px; align-items:center; padding:10px 22px 10px 14px; background:#ffffff; border:2px solid #ffffff; border-radius:256px">
+    <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:700; white-space:nowrap; color:#713043">Part 1 · Build and ship</p>
+  </div>
+  <img src="assets/775884ed6e.png" alt="A laptop showing the live Mental Help app at mental-help-alpha.vercel.app" style="position:absolute; top:410px; left:153px; width:650px; height:421px; object-fit:contain">
+  <div style="position:absolute; top:250px; left:872px; width:920px; height:216px; display:flex; flex-direction:row; gap:28px; align-items:center; padding:26px 30px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="width:220px; height:150px; display:flex; flex-direction:column; gap:6px; justify-content:center; padding:16px 20px; background:#2b1d25; border-radius:24px">
+      <p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#f7b9ce">&lt;Calm /&gt;</p>
+      <p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#d6cbf2">app.tsx</p>
+      <p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9fd8b5">✓ built</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px; flex:1">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:34px; font-weight:700; line-height:1.15; color:#2b1d25">React + TypeScript</h3>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Built with React, Vite, TypeScript, React Router and CSS Modules.</p>
+    </div>
+  </div>
+  <div style="position:absolute; top:486px; left:872px; width:920px; height:216px; display:flex; flex-direction:row; gap:28px; align-items:center; padding:26px 30px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="width:220px; height:150px; display:flex; flex-direction:column; gap:10px; justify-content:center; padding:16px 20px; background:#ffffff; border:2px solid #f3dce6; border-radius:24px">
+      <div style="display:flex; flex-direction:row; gap:10px; align-items:center">
+        <div style="width:18px; height:18px; display:flex; flex-direction:column; background:#3e9b6a; border-radius:256px">
+        </div>
+        <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; font-weight:700; color:#2b1d25">Ready</p>
+      </div>
+      <p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#6e5462">Production</p>
+      <p style="font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; color:#9b5c78">Vercel</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px; flex:1">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:34px; font-weight:700; line-height:1.15; color:#2b1d25">Custom deployment</h3>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Live on Vercel, with rewrites so every link opens the right screen.</p>
+    </div>
+  </div>
+  <div style="position:absolute; top:722px; left:872px; width:920px; height:216px; display:flex; flex-direction:row; gap:28px; align-items:center; padding:26px 30px; background:linear-gradient(180deg, #ffffff 0%, #fff6f9 100%); border:2px solid #ffffff; border-radius:32px">
+    <div style="width:220px; height:150px; display:flex; flex-direction:column; gap:2px; justify-content:center; padding:16px 20px; background:linear-gradient(160deg, #ffe7d6 0%, #ffd3b0 100%); border-radius:24px">
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; font-weight:600; color:#713043">On this phone</p>
+      <p style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:52px; font-weight:800; line-height:1; color:#2b1d25">12</p>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:24px; color:#6e5462">check-ins</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:6px; flex:1">
+      <h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif; font-size:34px; font-weight:700; line-height:1.15; color:#2b1d25">On-device data</h3>
+      <p style="font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:26px; line-height:1.4; color:#6e5462">Check-ins, bookings and saved items stay on the phone. No account needed.</p>
+    </div>
+  </div>
+  <p style="position:absolute; top:1000px; left:1712px; width:80px; padding:4px 0; font-family:'JetBrains Mono', 'Courier New', monospace; font-size:24px; text-align:center; color:#2b1d25; background:#ffffffbf; border-radius:256px">19</p>
+  
+</section>
+<section id="bonus2" data-transition="fade" style="background:linear-gradient(135deg, #F6EEFD 0%, #FBE6F0 55%, #FDEDE6 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:0px;top:740px;width:1920px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:330px;font-weight:800;line-height:1;letter-spacing:-12px;color:rgba(255,255,255,0.6);text-align:center;white-space:nowrap">MOTION</p>
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">09</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Bonus challenges</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">Part 2 · Motion, sound and AI</h2>
+<div style="position:absolute;left:128px;top:250px;width:540px;height:600px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:30px 34px">
+<div style="position:relative;width:472px;height:300px;border-radius:32px;background:linear-gradient(160deg, #FCE2EA 0%, #F7B9CE 100%)">
+<div style="position:absolute;left:106px;top:10px;width:260px;height:260px;border-radius:50%;border:3px solid rgba(255,255,255,0.35)"></div>
+<div style="position:absolute;left:136px;top:40px;width:200px;height:200px;border-radius:50%;border:3px solid rgba(255,255,255,0.6)"></div>
+<div style="position:absolute;left:162px;top:66px;width:148px;height:148px;border-radius:50%;border:3px solid rgba(255,255,255,0.9)"></div>
+<img src="assets/97dc846a79.png" alt="" style="position:absolute;left:176px;top:80px;width:120px;height:120px;object-fit:contain">
+<p style="position:absolute;left:146px;top:236px;width:180px;font-size:24px;font-weight:700;color:#713043;background:#FFFFFF;padding:6px 0px;border-radius:999px;text-align:center">Breathe in · 4s</p>
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.15;color:#2B1D25">Animations</h3>
+<p style="font-size:28px;line-height:1.4;color:#6E5462">Motion drives the breathing orb, six feelings and a reduce-motion mode.</p>
+</div>
+<div style="position:absolute;left:690px;top:250px;width:540px;height:600px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #CDBEF0;border-radius:32px;padding:30px 34px">
+<div style="width:472px;height:300px;display:flex;align-items:center;justify-content:center;border-radius:32px;background:linear-gradient(160deg, #EFE7FB 0%, #D6CBF2 100%)">
+<div style="width:400px;display:flex;flex-direction:column;gap:14px;background:#FFFFFF;border-radius:28px;padding:22px 26px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg, #F7B9CE 0%, #E98AA8 100%)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:#FFFFFF;width:30px;height:30px;flex:none"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></div>
+<div style="display:flex;flex-direction:column"><p style="font-size:26px;font-weight:700;color:#2B1D25">Rain loop</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78">WAV · seamless</p></div>
+</div>
+<img src="assets/b651e50ec3.png" alt="" style="width:348px;height:90px;object-fit:cover">
+<div style="display:flex;justify-content:space-between"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">00:00</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6E5462">10:00</p></div>
+</div>
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.15;color:#2B1D25">Generated audio</h3>
+<p style="font-size:28px;line-height:1.4;color:#6E5462">A royalty-free rain loop and a 10-minute calm track, made with code.</p>
+</div>
+<div style="position:absolute;left:1252px;top:250px;width:540px;height:600px;display:flex;flex-direction:column;gap:18px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F8C4A8;border-radius:32px;padding:30px 34px">
+<div style="width:472px;height:300px;display:flex;flex-direction:column;justify-content:center;gap:16px;border-radius:32px;background:linear-gradient(160deg, #FFE7D6 0%, #FFC9A4 100%);padding:24px">
+<div style="width:330px;display:flex;flex-direction:column;gap:2px;background:#FFFFFF;border-radius:8px 24px 24px 24px;padding:14px 20px"><p style="font-size:24px;font-weight:700;color:#9B5C78">Claude</p><p style="font-size:24px;color:#2B1D25">Spec ready: 28 sections</p></div>
+<div style="display:flex;justify-content:end"><div style="width:330px;display:flex;flex-direction:column;gap:2px;background:#F29BB0;border-radius:24px 8px 24px 24px;padding:14px 20px"><p style="font-size:24px;font-weight:700;color:#713043">Codex</p><p style="font-size:24px;color:#2B1D25">Phase built ✓</p></div></div>
+</div>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.15;color:#2B1D25">AI workflow</h3>
+<p style="font-size:28px;line-height:1.4;color:#6E5462">Claude wrote the spec and reviewed. Codex built the app from it.</p>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">20</p>
+
+</section>
+<section id="skills" data-transition="fade" style="background:linear-gradient(135deg, #F6EEFD 0%, #FBE6F0 55%, #FDEDE6 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">10</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Reflection · New skills and tools</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">New skills and tools</h2>
+<div style="position:absolute;left:720px;top:330px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle at 40% 35%, #FFFFFF 0%, #FCE6EE 45%, #F3C7D8 100%);border:6px solid #FFFFFF"></div>
+<img src="assets/c23d660e4c.png" alt="" style="position:absolute;left:770px;top:480px;width:380px;height:280px;object-fit:contain">
+<img src="assets/70e2b62fdb.png" alt="" style="position:absolute;left:1010px;top:360px;width:150px;height:122px;object-fit:contain">
+<img src="assets/8606b2fc95.png" alt="" style="position:absolute;left:740px;top:380px;width:100px;height:100px;object-fit:contain">
+<img src="assets/e77ac89156.png" alt="" style="position:absolute;left:820px;top:690px;width:150px;height:118px;object-fit:contain">
+<img src="assets/1a59b9e832.png" alt="" style="position:absolute;left:1050px;top:680px;width:130px;height:116px;object-fit:contain">
+<div style="position:absolute;left:128px;top:270px;width:560px;height:206px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:22px 28px;align-items:start">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#FFFFFF;background:linear-gradient(135deg, #F7B9CE 0%, #E98AA8 100%);padding:4px 14px;border-radius:999px">01</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Writing a spec</h3>
+<p style="font-size:24px;line-height:1.35;color:#6E5462">A 28-section handoff for an AI builder, plus a log of 24 decisions.</p>
+</div>
+<div style="position:absolute;left:128px;top:498px;width:560px;height:206px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #CDBEF0;border-radius:32px;padding:22px 28px;align-items:start">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#FFFFFF;background:linear-gradient(135deg, #DCCBF6 0%, #A99FE0 100%);padding:4px 14px;border-radius:999px">02</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Prompting Codex</h3>
+<p style="font-size:24px;line-height:1.35;color:#6E5462">Sending one phase at a time, then reviewing each screen before moving on.</p>
+</div>
+<div style="position:absolute;left:128px;top:726px;width:560px;height:206px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F8C4A8;border-radius:32px;padding:22px 28px;align-items:start">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#FFFFFF;background:linear-gradient(135deg, #FFD9BC 0%, #F49C8A 100%);padding:4px 14px;border-radius:999px">03</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">React and Motion</h3>
+<p style="font-size:24px;line-height:1.35;color:#6E5462">How components, routes and design tokens turn Figma into code.</p>
+</div>
+<div style="position:absolute;left:1232px;top:270px;width:560px;height:206px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #E3A9C3;border-radius:32px;padding:22px 28px;align-items:start">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#FFFFFF;background:linear-gradient(135deg, #E9A6C6 0%, #B0668A 100%);padding:4px 14px;border-radius:999px">04</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Vercel</h3>
+<p style="font-size:24px;line-height:1.35;color:#6E5462">Teams, projects, build settings and rewrites for a single-page app.</p>
+</div>
+<div style="position:absolute;left:1232px;top:498px;width:560px;height:206px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #D9C3D2;border-radius:32px;padding:22px 28px;align-items:start">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#FFFFFF;background:linear-gradient(135deg, #D7B8CB 0%, #8F6A80 100%);padding:4px 14px;border-radius:999px">05</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Accessibility</h3>
+<p style="font-size:24px;line-height:1.35;color:#6E5462">Measuring contrast, 44px tap areas and support for reduced motion.</p>
+</div>
+<div style="position:absolute;left:1232px;top:726px;width:560px;height:206px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:22px 28px;align-items:start">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#FFFFFF;background:linear-gradient(135deg, #F7B9CE 0%, #E98AA8 100%);padding:4px 14px;border-radius:999px">06</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Creative direction</h3>
+<p style="font-size:24px;line-height:1.35;color:#6E5462">Critiquing my own assets and choosing one direction with clear reasons.</p>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">21</p>
+
+</section>
+<section id="hurdles" data-transition="fade" style="background:linear-gradient(135deg, #FDE6DE 0%, #FADCE8 50%, #EDE0F8 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">10</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Reflection · Design and planning hurdles</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">What I had to work through</h2>
+<div style="position:absolute;left:128px;top:250px;width:540px;height:700px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:20px 22px 24px;align-items:start">
+<div style="position:relative;width:496px;height:350px;border-radius:28px;background:linear-gradient(160deg, #F7B9CE 0%, #E98AA8 100%)">
+<div style="position:absolute;left:20px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:rgba(255,255,255,0.55)"><img src="assets/2da8c85d8f.png" alt="The Dribbble reference" style="width:190px;height:280px;object-fit:cover;border-radius:16px"></div>
+<p style="position:absolute;left:230px;top:145px;width:40px;font-size:40px;font-weight:700;color:#FFFFFF;text-align:center">→</p>
+<div style="position:absolute;left:266px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:#FFFFFF"><img src="assets/fd30c62648.png" alt="Mental Help Home screen" style="width:140px;height:275px;object-fit:contain"></div>
+</div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78">01</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Finding the right inspiration</h3>
+<p style="font-size:24px;line-height:1.35;color:#6E5462">I wanted it to look and work like a period tracker: soft, simple and used every day.</p>
+<div style="background:#FCE6EC;border-radius:20px;padding:14px 18px"><p style="font-size:26px;font-weight:600;line-height:1.35;color:#2B1D25">I found a Dribbble concept with that feel and built my blush look from it.</p></div>
+</div>
+<div style="position:absolute;left:690px;top:250px;width:540px;height:700px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #CDBEF0;border-radius:32px;padding:20px 22px 24px;align-items:start">
+<div style="position:relative;width:496px;height:350px;border-radius:28px;background:linear-gradient(160deg, #DCCBF6 0%, #A99FE0 100%)">
+<div style="position:absolute;left:20px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:rgba(255,255,255,0.55)"><img src="assets/11a7771af8.png" alt="The old 3D cloud" style="width:200px;height:142px;object-fit:contain"></div>
+<p style="position:absolute;left:230px;top:145px;width:40px;font-size:40px;font-weight:700;color:#FFFFFF;text-align:center">→</p>
+<div style="position:absolute;left:266px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:#FFFFFF"><img src="assets/97dc846a79.png" alt="The breathing orb" style="width:190px;height:190px;object-fit:contain"></div>
+</div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78">02</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Letting go of my mascot</h3>
+<div style="background:#FCE6EC;border-radius:20px;padding:14px 18px"><p style="font-size:26px;font-weight:600;line-height:1.35;color:#2B1D25">I loved my 3D cloud, but it felt generic. I chose a breathing orb.</p></div>
+</div>
+<div style="position:absolute;left:1252px;top:250px;width:540px;height:700px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F8C4A8;border-radius:32px;padding:20px 22px 24px;align-items:start">
+<div style="position:relative;width:496px;height:350px;border-radius:28px;background:linear-gradient(160deg, #FFD9BC 0%, #F49C8A 100%)">
+<div style="position:absolute;left:20px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:rgba(255,255,255,0.55)"><div style="display:flex;flex-direction:column;gap:10px"><p style="font-size:24px;font-weight:600;color:#2B1D25;background:#FFFFFF;padding:6px 14px;border-radius:999px">← Explore</p><p style="font-size:24px;font-weight:600;color:#2B1D25;background:#FFFFFF;padding:6px 14px;border-radius:999px">← Calm</p><p style="font-size:24px;font-weight:600;color:#2B1D25;background:#FFFFFF;padding:6px 14px;border-radius:999px">← Check-in</p></div></div>
+<p style="position:absolute;left:230px;top:145px;width:40px;font-size:40px;font-weight:700;color:#FFFFFF;text-align:center">→</p>
+<div style="position:absolute;left:266px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:#FFFFFF"><p style="font-size:34px;font-weight:700;color:#FFFFFF;background:#E98AA8;padding:14px 26px;border-radius:999px">← Home</p></div>
+</div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78">03</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Testing my own app</h3>
+<div style="background:#FCE6EC;border-radius:20px;padding:14px 18px"><p style="font-size:26px;font-weight:600;line-height:1.35;color:#2B1D25">Back buttons felt random, so I made every one of them go Home.</p></div>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">22</p>
+
+</section>
+<section id="hurdles2" data-transition="fade" style="background:linear-gradient(135deg, #F6EEFD 0%, #FBE6F0 55%, #FDEDE6 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">10</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Reflection · Technical hurdles</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">What broke, and the fix</h2>
+<div style="position:absolute;left:128px;top:250px;width:540px;height:700px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #CDBEF0;border-radius:32px;padding:20px 22px 24px;align-items:start">
+<div style="position:relative;width:496px;height:350px;border-radius:28px;background:linear-gradient(160deg, #DCCBF6 0%, #A99FE0 100%)">
+<div style="position:absolute;left:20px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:rgba(255,255,255,0.55)"><img src="assets/b43cc26382.png" alt="Blocked download" style="width:170px;height:196px;object-fit:contain"></div>
+<p style="position:absolute;left:230px;top:145px;width:40px;font-size:40px;font-weight:700;color:#FFFFFF;text-align:center">→</p>
+<div style="position:absolute;left:266px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:#FFFFFF"><img src="assets/70e2b62fdb.png" alt="SVG code" style="width:196px;height:160px;object-fit:contain"></div>
+</div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78">04</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Figma assets were blocked</h3>
+<div style="background:#FCE6EC;border-radius:20px;padding:14px 18px"><p style="font-size:26px;font-weight:600;line-height:1.35;color:#2B1D25">Exported icons as SVG code through Figma’s plugin API.</p></div>
+</div>
+<div style="position:absolute;left:690px;top:250px;width:540px;height:700px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:20px 22px 24px;align-items:start">
+<div style="position:relative;width:496px;height:350px;border-radius:28px;background:linear-gradient(160deg, #F7B9CE 0%, #E98AA8 100%)">
+<div style="position:absolute;left:20px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:rgba(255,255,255,0.55)"><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div style="display:flex;gap:26px"><img src="assets/b651e50ec3.png" alt="" style="width:80px;height:63px;object-fit:cover"><img src="assets/b651e50ec3.png" alt="" style="width:80px;height:63px;object-fit:cover"></div><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:#FFFFFF;padding:4px 14px;border-radius:999px">MP3 · gap</p></div></div>
+<p style="position:absolute;left:230px;top:145px;width:40px;font-size:40px;font-weight:700;color:#FFFFFF;text-align:center">→</p>
+<div style="position:absolute;left:266px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:#FFFFFF"><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><img src="assets/b651e50ec3.png" alt="A seamless sound wave" style="width:180px;height:142px;object-fit:contain"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#FFFFFF;background:#E98AA8;padding:4px 14px;border-radius:999px">WAV · loops</p></div></div>
+</div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78">05</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">The rain loop had a gap</h3>
+<div style="background:#FCE6EC;border-radius:20px;padding:14px 18px"><p style="font-size:26px;font-weight:600;line-height:1.35;color:#2B1D25">Switched from MP3 to WAV, which loops without a gap.</p></div>
+</div>
+<div style="position:absolute;left:1252px;top:250px;width:540px;height:700px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F8C4A8;border-radius:32px;padding:20px 22px 24px;align-items:start">
+<div style="position:relative;width:496px;height:350px;border-radius:28px;background:linear-gradient(160deg, #FFD9BC 0%, #F49C8A 100%)">
+<div style="position:absolute;left:20px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:rgba(255,255,255,0.55)"><img src="assets/c8a260fbaa.png" alt="A pixelated profile photo" style="width:190px;height:190px;object-fit:cover;border-radius:50%"></div>
+<p style="position:absolute;left:230px;top:145px;width:40px;font-size:40px;font-weight:700;color:#FFFFFF;text-align:center">→</p>
+<div style="position:absolute;left:266px;top:20px;width:210px;height:310px;display:flex;align-items:center;justify-content:center;border-radius:22px;background:#FFFFFF"><img src="assets/b1f823a975.jpg" alt="A sharp profile photo" style="width:190px;height:190px;object-fit:cover;border-radius:50%"></div>
+</div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78">06</p>
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:32px;font-weight:700;line-height:1.15;color:#2B1D25">Profile photos looked pixelated</h3>
+<div style="background:#FCE6EC;border-radius:20px;padding:14px 18px"><p style="font-size:26px;font-weight:600;line-height:1.35;color:#2B1D25">Replaced them with sharper portraits at four times the size.</p></div>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">23</p>
+
+</section>
+<section id="evolution" data-transition="fade" style="background:linear-gradient(135deg, #FDE6DE 0%, #FADCE8 50%, #EDE0F8 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">10</p>
+<p style="position:absolute;left:330px;top:80px;width:1400px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Reflection · What changed from concept to final?</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1400px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">One screen, four versions</h2>
+<div style="position:absolute;left:128px;top:220px;width:1664px;height:760px;border-radius:48px;background:linear-gradient(160deg, #FFFFFF 0%, #F8E8EF 55%, #EFE6FA 100%);border:2px solid #FFFFFF"></div>
+<div style="position:absolute;left:300px;top:930px;width:1320px;height:6px;border-radius:3px;background:linear-gradient(90deg, #FFD3B0 0%, #D6CBF2 35%, #F29BB0 70%, #713043 100%)"></div>
+<img src="assets/a704e54a30.png" alt="Reference Home screen in an iPhone mockup: orange star mascot card, Weekly Mood and Energy 80, Stress 67" style="position:absolute;left:240px;top:379px;width:200px;height:391px;object-fit:contain">
+<div style="position:absolute;left:324px;top:917px;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #FFD9BC 0%, #F49C8A 100%);border:4px solid #FFFFFF"></div>
+<div style="position:absolute;left:170px;top:782px;width:340px;display:flex;flex-direction:column;align-items:center;gap:0px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78;text-align:center">01 · Reference</p>
+<p style="font-size:26px;line-height:1.3;color:#2B1D25;font-weight:600;text-align:center">Orange and lilac clay</p>
+</div>
+<img src="assets/605c987e2e.png" alt="HTML prototype Home screen in an iPhone mockup" style="position:absolute;left:628px;top:330px;width:225px;height:440px;object-fit:contain">
+<div style="position:absolute;left:724px;top:917px;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #DCCBF6 0%, #A99FE0 100%);border:4px solid #FFFFFF"></div>
+<div style="position:absolute;left:570px;top:782px;width:340px;display:flex;flex-direction:column;align-items:center;gap:0px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78;text-align:center">02 · Prototype</p>
+<p style="font-size:26px;line-height:1.3;color:#2B1D25;font-weight:600;text-align:center">Blush with emoji icons</p>
+</div>
+<img src="assets/ac8d8fc6a8.png" alt="Figma Home screen in an iPhone mockup" style="position:absolute;left:1035px;top:281px;width:250px;height:489px;object-fit:contain">
+<div style="position:absolute;left:1144px;top:917px;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #F7B9CE 0%, #E98AA8 100%);border:4px solid #FFFFFF"></div>
+<div style="position:absolute;left:990px;top:782px;width:340px;display:flex;flex-direction:column;align-items:center;gap:0px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78;text-align:center">03 · Figma</p>
+<p style="font-size:26px;line-height:1.3;color:#2B1D25;font-weight:600;text-align:center">Hi-fi blush cards</p>
+</div>
+<img src="assets/4f8ae36ff0.png" alt="Live app Home screen in an iPhone mockup" style="position:absolute;left:1443px;top:233px;width:275px;height:537px;object-fit:contain">
+<div style="position:absolute;left:1564px;top:917px;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg, #B0668A 0%, #713043 100%);border:4px solid #FFFFFF"></div>
+<div style="position:absolute;left:1410px;top:782px;width:340px;display:flex;flex-direction:column;align-items:center;gap:0px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#9B5C78;text-align:center">04 · Live app</p>
+<p style="font-size:26px;line-height:1.3;color:#2B1D25;font-weight:600;text-align:center">Orb logo, live data</p>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">24</p>
+
+</section>
+<section id="inhand" data-transition="fade" style="background:#FFF6F8;color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<img src="assets/a6270c5b6c.jpg" alt="Close-up of a phone on a pink table with pearls and a glass bead, showing the Mental Help Home screen: Hello, Samantha" style="position:absolute;left:0px;top:0px;width:480px;height:1080px;object-fit:cover">
+<img src="assets/e2b07970a2.jpg" alt="Top-down shot of two friends' phones on blush tiles, one showing Check-in and one showing the Calm player" style="position:absolute;left:480px;top:0px;width:480px;height:1080px;object-fit:cover">
+<img src="assets/a53bf61fe9.jpg" alt="Promo layout: a large calm wordmark behind two tilted phones showing the Mental Help splash screen and Buy Sessions, with floating emotion orbs, a breathing card and a mood check-in card" style="position:absolute;left:960px;top:0px;width:480px;height:1080px;object-fit:cover">
+<img src="assets/ced786dab6.jpg" alt="A phone showing the Explore screen floating in a soft pink sky" style="position:absolute;left:1440px;top:0px;width:480px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:156px;top:72px;width:300px;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:22px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">The final app</p>
+<h2 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:56px;font-weight:700;line-height:1.02;letter-spacing:-1px;color:#2B1D25">Calm, in your hand</h2>
+</div>
+<p style="position:absolute;right:48px;bottom:40px;width:96px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:#FFF6F8;padding:6px 0px;border-radius:999px;text-align:center">25</p>
+
+</section>
+<section id="next" data-transition="fade" style="background:linear-gradient(135deg, #FDEEF3 0%, #FAE4EE 50%, #F0E6FA 100%);color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<p style="position:absolute;left:120px;top:64px;width:200px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:132px;font-weight:700;line-height:1;letter-spacing:-4px;color:rgba(233,135,159,0.38)">10</p>
+<p style="position:absolute;left:330px;top:80px;width:1300px;font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#9B5C78">Reflection · What would I build next?</p>
+<h2 style="position:absolute;left:330px;top:118px;width:1300px;font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1.08;letter-spacing:-1.5px;color:#2B1D25">With more time, I would add…</h2>
+<div style="position:absolute;left:128px;top:250px;width:760px;height:700px;border-radius:48px;background:linear-gradient(160deg, #F9C9D9 0%, #F3B5CB 50%, #DCCBF6 100%);border:2px solid #FFFFFF"></div>
+<div style="position:absolute;left:200px;top:300px;width:620px;height:620px;border-radius:50%;background:radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.28) 40%, rgba(255,255,255,0) 70%)"></div>
+<img src="assets/e4a4958f1f.png" alt="A phone with a blurred, frosted screen and a big glossy question mark: Coming soon" style="position:absolute;left:290px;top:280px;width:400px;height:692px;object-fit:contain">
+<img src="assets/8606b2fc95.png" alt="" style="position:absolute;left:640px;top:300px;width:110px;height:110px;object-fit:contain">
+<img src="assets/8606b2fc95.png" alt="" style="position:absolute;left:200px;top:760px;width:80px;height:80px;object-fit:contain">
+<img src="assets/d9854bc48b.png" alt="" style="position:absolute;left:690px;top:780px;width:110px;height:110px;object-fit:contain">
+<div style="position:absolute;left:928px;top:250px;width:864px;height:220px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F2B3C8;border-radius:32px;padding:26px 30px;flex-direction:row;align-items:center;gap:28px">
+<div style="width:150px;height:150px;display:flex;align-items:center;justify-content:center;border-radius:36px;background:linear-gradient(160deg, #F7B9CE 0%, #E98AA8 100%)"><img src="assets/d17b0875bc.png" alt="" style="width:116px;height:110px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.15;color:#2B1D25">Insights</h3>
+<p style="font-size:28px;line-height:1.4;color:#6E5462">Build the Insights and Calendar screens that now say “coming soon”.</p>
+</div>
+</div>
+<div style="position:absolute;left:928px;top:490px;width:864px;height:220px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #CDBEF0;border-radius:32px;padding:26px 30px;flex-direction:row;align-items:center;gap:28px">
+<div style="width:150px;height:150px;display:flex;align-items:center;justify-content:center;border-radius:36px;background:linear-gradient(160deg, #DCCBF6 0%, #A99FE0 100%)"><img src="assets/acda6c2ba2.png" alt="" style="width:116px;height:92px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.15;color:#2B1D25">Accounts &amp; Sync</h3>
+<p style="font-size:28px;line-height:1.4;color:#6E5462">Sign-in with Supabase, so check-ins follow you to any device.</p>
+</div>
+</div>
+<div style="position:absolute;left:928px;top:730px;width:864px;height:220px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg, #FFFFFF 0%, #FFF6F9 100%);border:2px solid #FFFFFF;border-bottom:7px solid #F8C4A8;border-radius:32px;padding:26px 30px;flex-direction:row;align-items:center;gap:28px">
+<div style="width:150px;height:150px;display:flex;align-items:center;justify-content:center;border-radius:36px;background:linear-gradient(160deg, #FFD9BC 0%, #F49C8A 100%)"><img src="assets/d2fab8a063.png" alt="" style="width:116px;height:110px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px">
+<h3 style="font-family:'Bricolage Grotesque', Arial, sans-serif;font-size:40px;font-weight:700;line-height:1.15;color:#2B1D25">Real Booking</h3>
+<p style="font-size:28px;line-height:1.4;color:#6E5462">Pick a therapist and a time slot, then pay securely.</p>
+</div>
+</div>
+<p style="position:absolute;left:1712px;top:1000px;width:80px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#2B1D25;background:rgba(255,255,255,0.75);padding:4px 0px;border-radius:999px;text-align:center">26</p>
+
+</section>
+<section id="thanks" data-transition="fade" style="background:#F7E3F0;color:#6E5462;font-family:'Plus Jakarta Sans', Arial, sans-serif">
+<video data-src="assets/5085ea1900-qr2.mp4" poster="assets/d00785faf0-qr2.jpg" muted playsinline preload="none" aria-label="Ending video: a check-in card on a dark background, a prompt typed into a chat box, a zoom into the Explore phone, the phone showreel, a mood card that turns stress into calm, and a Mental Help thank-you card with the live link" style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;object-fit:cover"></video>
+
+</section>
+</main>
+<div id="snd" hidden>
+<button id="snd-btn" aria-label="Mute music"></button>
+<label for="snd-vol">Music</label>
+<input id="snd-vol" type="range" min="0" max="1" step="0.05" value="0.7" aria-label="Music volume">
+</div>
+<nav id="ui" aria-label="Slide controls">
+<button id="ui-prev" aria-label="Previous slide">‹</button>
+<span id="ui-count">1 / 1</span>
+<button id="ui-next" aria-label="Next slide">›</button>
+<button id="ui-fs" aria-label="Full screen" title="Full screen (F)">⤢</button>
+<button id="ui-all" aria-label="Back to all slides" title="All slides">☰</button>
+</nav>
+<div id="feed">
+<header id="hint"><span class="ph" aria-hidden="true"></span><span><b>Mental Help · Project presentation</b>Turn your phone sideways to present. Tap a slide to open it.</span></header>
+<ol id="list"></ol>
+<nav id="links" aria-label="Project links"><a href="https://mental-help-alpha.vercel.app" target="_blank" rel="noopener">Live app →</a><a href="https://www.figma.com/board/XrMVrKUKm70fdkMmBLDdpO" target="_blank" rel="noopener">Open in FigJam →</a><a href="https://claude.ai/artifact/EG9PRkzDAikf4u6a7vBzou" target="_blank" rel="noopener">Open prototype →</a><a href="https://dribbble.com/shots/27716037-Mental-Health-Mobile-App" target="_blank" rel="noopener">View on Dribbble →</a><a href="https://www.figma.com/design/AUItTBis7M5o89P9dCcskv" target="_blank" rel="noopener">Open in Figma →</a></nav>
+</div>
+<script>
+(function(){
+const stage=document.getElementById('stage'), S=[...stage.children], n=S.length;
+const C=S.map((s,k)=>{const c=document.createElement('div');c.className='card';s.before(c);c.appendChild(s);return c;});
+
+// tag elements for entrance animations
+function px(v){return parseFloat(v)||0}
+S.forEach(sec=>{let m=0;
+  const take=(el,depth)=>{
+    if(el.tagName==='VIDEO'||el.tagName==='ASIDE')return;
+    const st=el.style, w=px(st.width), big=el.tagName==='DIV'&&w>=1400&&el.children.length&&depth<3;
+    if(big){el.classList.add('a','fade');el.style.setProperty('--i',0);[...el.children].forEach(c=>take(c,depth+1));return;}
+    if(el.tagName==='DIV'&&st.position==='relative'&&w>=1400){[...el.children].forEach(c=>take(c,depth+1));return;}
+    el.classList.add('a');el.style.setProperty('--i',m++);
+    const fs=px(st.fontSize), bg=st.background||'';
+    if(fs>=200||(el.tagName==='DIV'&&!el.children.length&&/radial-gradient/.test(bg)&&w>=300))el.classList.add('fade');
+    else if(el.tagName==='IMG'||el.tagName==='svg'){const sz=Math.max(w,px(st.height));
+      if(sz&&sz<=240)el.classList.add('float');else if(sz>=300&&w<700&&px(st.height)<1000)el.classList.add('drift');else el.classList.add('pop');}
+    else if(el.tagName==='DIV'&&!el.children.length&&/radial-gradient/.test(bg))el.classList.add('float');
+  };
+  [...sec.children].forEach(c=>take(c,0));
+});
+
+// phone list: pictures of each slide (light on memory)
+const list=document.getElementById('list');
+S.forEach((s,k)=>{const li=document.createElement('li');const b=document.createElement('button');
+  b.setAttribute('aria-label','Open slide '+(k+1));
+  b.innerHTML=`<img src="thumbs/${k+1}.jpg" alt="" loading="${k<3?'eager':'lazy'}" decoding="async" width="960" height="540"><span class="num">${k+1} / ${n}</span>`;
+  b.onclick=()=>{forced=true;document.body.classList.add('forced');fit(true);go(k,true,true);};
+  li.appendChild(b);list.appendChild(li);});
+
+let i=-1, feed=null, forced=false, hideT={};
+const isFeed=()=>!forced&&innerHeight>innerWidth&&innerWidth<820;
+function fit(){
+  const f=isFeed();
+  if(f!==feed){feed=f;document.body.classList.toggle('feed',f);
+    if(f){document.documentElement.classList.add('feed');snd.hidden=true;S.forEach(s=>s.querySelectorAll('video').forEach(v=>v.pause()));C.forEach(c=>c.classList.remove('live','cur'));
+      const li=list.children[Math.max(0,i)];requestAnimationFrame(()=>li&&li.scrollIntoView({block:'center'}));}
+    else{document.documentElement.classList.remove('feed');const j=i<0?0:i;i=-1;go(j,false,true);} }
+  if(feed)return;
+  const k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`scale(${k}) translate(-50%,-50%)`;}
+
+function show(k,on){const c=C[k];if(!c)return;clearTimeout(hideT[k]);
+  if(on){c.classList.add('live');}
+  else{hideT[k]=setTimeout(()=>{if(k!==i)c.classList.remove('live')},520);}}
+function go(j,push,force){
+  if(feed)return;
+  j=Math.max(0,Math.min(n-1,j)); if(j===i&&!force)return;
+  if(i>=0&&i!==j){S[i].classList.remove('on');C[i].classList.remove('cur');S[i].querySelectorAll('video').forEach(v=>v.pause());show(i,false);}
+  i=j; show(i,true); C[i].classList.add('cur');
+  S[i].classList.remove('on'); void S[i].offsetWidth; S[i].classList.add('on');
+  const vids=S[i].querySelectorAll('video'); snd.hidden=!vids.length; vids.forEach(playVideo);
+  document.getElementById('ui-count').textContent=(i+1)+' / '+n;
+  document.getElementById('bar').style.width=((i+1)/n*100)+'%';
+  if(push!==false)history.replaceState(null,'','#'+(i+1));
+}
+
+// ---------- music volume ----------
+const snd=document.getElementById('snd'), sbtn=document.getElementById('snd-btn'), svol=document.getElementById('snd-vol');
+const ICON_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
+const ICON_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+let vol=0.7, muted=false, actx=null, gain=null; const wired=new WeakSet();
+try{const sv=localStorage.getItem('mh-vol');if(sv!==null)vol=Math.min(1,Math.max(0,parseFloat(sv)));}catch(e){}
+svol.value=vol;
+function audioGraph(v){
+  if(wired.has(v))return;
+  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    actx=actx||new AC(); gain=gain||actx.createGain(); gain.connect(actx.destination);
+    actx.createMediaElementSource(v).connect(gain); wired.add(v);}catch(e){}
+}
+function applyVol(){
+  const level=muted?0:vol;
+  svol.style.setProperty('--v',(vol*100)+'%');
+  sbtn.innerHTML=level>0?ICON_ON:ICON_OFF; sbtn.setAttribute('aria-label',level>0?'Mute music':'Play music');
+  S.forEach(sec=>sec.querySelectorAll('video').forEach(v=>{
+    if(gain){gain.gain.value=level;v.volume=1;}else{try{v.volume=level}catch(e){}}
+    v.muted=level===0;}));
+}
+function playVideo(v){
+  if(!v.src)v.src=v.dataset.src;
+  try{v.currentTime=0}catch(e){}
+  audioGraph(v); if(actx&&actx.state==='suspended')actx.resume().catch(()=>{});
+  applyVol();
+  const p=v.play();
+  if(p&&p.catch)p.catch(()=>{ // the browser blocked sound without a tap: play silently, tap the speaker for sound
+    v.muted=true; muted=true; applyVol(); v.play().catch(()=>{}); });
+}
+sbtn.addEventListener('click',e=>{e.stopPropagation();
+  if(actx&&actx.state==='suspended')actx.resume().catch(()=>{});
+  if(muted||vol===0){muted=false;if(vol===0)vol=0.7;svol.value=vol;}else muted=true;
+  applyVol(); const v=S[i]&&S[i].querySelector('video'); if(v&&v.paused)v.play().catch(()=>{}); wake();});
+svol.addEventListener('input',()=>{vol=parseFloat(svol.value);muted=vol===0;
+  if(actx&&actx.state==='suspended')actx.resume().catch(()=>{});
+  applyVol();try{localStorage.setItem('mh-vol',String(vol))}catch(e){} wake();});
+['click','touchstart','touchend','pointerdown','keydown'].forEach(ev=>snd.addEventListener(ev,e=>e.stopPropagation()));
+addEventListener('resize',()=>fit());
+addEventListener('orientationchange',()=>setTimeout(fit,250));
+
+addEventListener('keydown',e=>{
+  if(feed)return; const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();go(i+1)}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();go(i-1)}
+  else if(k==='Home')go(0); else if(k==='End')go(n-1);
+  else if(k==='f'||k==='F')toggleFs();
+});
+const canFs=!!(document.documentElement.requestFullscreen);
+if(!canFs)document.getElementById('ui-fs').style.display='none';
+function toggleFs(){if(!canFs)return;if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else document.documentElement.requestFullscreen().catch(()=>{});}
+function btn(id,f){const el=document.getElementById(id);el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();f();wake();});}
+btn('ui-prev',()=>go(i-1)); btn('ui-next',()=>go(i+1)); btn('ui-fs',toggleFs);
+btn('ui-all',()=>{forced=false;document.body.classList.remove('forced');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});fit();});
+
+// tap / swipe on the slide itself
+let sx=null,sy=null,moved=false;
+stage.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;moved=false;},{passive:true});
+stage.addEventListener('touchmove',e=>{if(sx==null)return;const t=e.touches[0];if(Math.abs(t.clientX-sx)>12||Math.abs(t.clientY-sy)>12)moved=true;},{passive:true});
+stage.addEventListener('touchend',e=>{if(sx==null)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;sx=null;
+  if(moved&&Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){go(dx<0?i+1:i-1);}},{passive:true});
+stage.addEventListener('click',e=>{if(e.target.closest('a'))return;if(moved){moved=false;return;}
+  if(e.clientX<innerWidth*0.3)go(i-1);else go(i+1);wake();});
+
+let t;const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+function wake(){document.body.classList.remove('idle');clearTimeout(t);if(fine)t=setTimeout(()=>document.body.classList.add('idle'),2500)}
+addEventListener('mousemove',wake);addEventListener('keydown',wake);wake();
+
+const h=parseInt(location.hash.slice(1));
+fit(); if(!feed)go(h>0?h-1:0,false,true); else if(h>0)i=h-1;
+})();
+</script>
+</body>
+</html>

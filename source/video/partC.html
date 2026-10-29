@@ -1,0 +1,83 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:#F7E3F0}
+.abs{position:absolute}
+.blob{position:absolute;border-radius:50%;filter:blur(90px)}
+.word{font:700 92px 'Bricolage Grotesque';letter-spacing:-3px;color:#FFFFFF;text-shadow:0 6px 30px rgba(160,80,130,.25);white-space:nowrap}
+#stage{inset:0;perspective:1800px}
+#card{left:610px;top:220px;width:700px;background:#FFFFFF;border-radius:40px;padding:36px 40px;box-shadow:0 50px 100px rgba(150,80,130,.28);transform-origin:50% 100%}
+#card h3{font:800 34px 'Plus Jakarta Sans';color:#2B1D25;display:flex;align-items:center;gap:14px}
+#card h3 img{width:48px;height:48px}
+#card .sub{font:500 22px 'Plus Jakarta Sans';color:#8C7080;margin-top:6px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid #F3DCE6}
+.row p{font:600 26px 'Plus Jakarta Sans';color:#2B1D25}
+.row span{font:500 26px 'JetBrains Mono';color:#9B5C78}
+.track{height:12px;border-radius:999px;background:#FCE2E7;margin-top:10px}
+.fill{height:12px;border-radius:999px;background:linear-gradient(90deg,#F29BB0,#C9A9E6)}
+#end{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+#logo{display:flex;align-items:center;gap:22px}
+#logo img{width:110px;height:110px}
+#logo p{font:800 104px 'Bricolage Grotesque';letter-spacing:-3px;color:#2B1D25}
+#ty{font:700 72px 'Bricolage Grotesque';letter-spacing:-1px;background:linear-gradient(90deg,#C9507E,#7A5FC0);-webkit-background-clip:text;color:transparent}
+#url{font:600 30px 'Plus Jakarta Sans';color:#713043;background:#FFFFFF;padding:16px 36px;border-radius:999px;box-shadow:0 20px 50px rgba(150,80,130,.18)}
+#qrc{background:rgba(255,255,255,.94);padding:14px;border-radius:26px;box-shadow:0 18px 44px rgba(150,80,130,.2);margin-top:6px}
+#qrc img{width:210px;height:210px;display:block}
+.st{position:absolute}
+#flash{inset:0;background:#FFF}
+</style></head><body>
+<div class="blob" id="b1" style="width:900px;height:900px;background:#F7B9CE"></div>
+<div class="blob" id="b2" style="width:800px;height:800px;background:#C9B6F2"></div>
+<div class="blob" id="b3" style="width:700px;height:700px;background:#FFD3C0"></div>
+<div class="blob" id="b4" style="width:600px;height:600px;background:#B9C8F7"></div>
+<p class="abs word" id="wl" style="top:470px">Turns stress</p>
+<p class="abs word" id="wr" style="top:470px">into calm</p>
+<div id="stage" class="abs"><div id="card" class="abs">
+ <h3><img src="orb-calm.png">Mood saved · Calm</h3><p class="sub">Today, 10:42 pm · after a 10 min Calm session</p>
+ <div class="row" style="display:block"><div style="display:flex;justify-content:space-between"><p>Stress</p><span id="sv">67</span></div><div class="track"><div class="fill" id="f1"></div></div></div>
+ <div class="row" style="display:block"><div style="display:flex;justify-content:space-between"><p>Breathing</p><span>4 · 2 · 6s</span></div><div class="track"><div class="fill" id="f2"></div></div></div>
+ <div class="row" style="display:block;border-bottom:none"><div style="display:flex;justify-content:space-between"><p>Streak</p><span id="sk">4 days</span></div><div class="track"><div class="fill" id="f3"></div></div></div>
+</div></div>
+<div id="end" class="abs"><div id="logo"><img src="orb-calm.png"><p>Mental Help</p></div><p id="ty">Thank you</p><p id="url">mental-help-alpha.vercel.app</p><div id="qrc"><img src="qr-app.png" alt=""></div></div>
+<img class="st" id="s1" src="w-heart.png" style="width:130px">
+<img class="st" id="s2" src="w-cloud.png" style="width:190px">
+<img class="st" id="s3" src="w-moon.png" style="width:120px">
+<img class="st" id="s4" src="w-sparkle.png" style="width:110px">
+<img class="st" id="s5" src="w-flower.png" style="width:120px">
+<img class="st" id="s6" src="w-star.png" style="width:90px">
+<img class="st" id="s7" src="orb-glass.png" style="width:120px">
+<img class="st" id="s8" src="w-sparkle.png" style="width:70px">
+<div id="flash" class="abs"></div>
+<script>
+const $=id=>document.getElementById(id);
+const cl=x=>Math.max(0,Math.min(1,x)), eo=x=>1-Math.pow(1-cl(x),3), eio=x=>{x=cl(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=cl(x);const c1=1.6,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const ST=[['s1',300,250,-12],['s2',1450,210,8],['s3',1560,700,-6],['s4',380,720,0],['s5',220,470,10],['s6',1680,470,-10],['s7',1330,880,0],['s8',620,180,0]];
+function render(t){
+ $('flash').style.opacity=Math.max(0,1-t/0.25)*0.9;
+ const bt=t*0.5;
+ [['b1',300,200,260,180],['b2',1200,100,220,200],['b3',200,600,280,160],['b4',1300,600,240,190]].forEach(([id,x,y,ax,ay],i)=>{$(id).style.left=(x+Math.sin(bt+i*1.7)*ax)+'px';$(id).style.top=(y+Math.cos(bt*0.8+i)*ay)+'px'});
+ // card rises with tilt 0.2..1.2, flattens by 2.4
+ const cr=back((t-0.2)/0.8), cf=eio((t-1.2)/1.2);
+ const out=eio((t-4.4)/0.5);
+ $('card').style.opacity=cl((t-0.2)/0.3)*(1-out);
+ $('card').style.transform=`translateY(${(1-cr)*500 + out*-60}px) rotateX(${32*(1-cf)}deg) scale(${(0.85+0.15*cr)*(1-0.15*out)})`;
+ const k=eio((t-1.6)/1.6);
+ $('f1').style.width=(67-26*k)+'%'; $('sv').textContent=Math.round(67-26*k);
+ $('f2').style.width=(30+60*eio((t-1.8)/1.4))+'%'; $('f3').style.width=(40+15*eio((t-2.6)/0.6))+'%'; $('sk').textContent=t>2.9?'5 days':'4 days';
+ // words fly in from sides 0.9..1.6, then slide out with card
+ const wl=back((t-0.9)/0.6), wr=back((t-1.3)/0.6);
+ $('wl').style.left=(-700+ (80+700)*wl - out*300)+'px'; $('wl').style.opacity=cl((t-0.9)/0.2)*(1-out);
+ $('wr').style.left=(1920 + (1420-1920)*wr + out*300)+'px'; $('wr').style.opacity=cl((t-1.3)/0.2)*(1-out);
+ // end card 4.8+
+ const e=back((t-4.8)/0.7); $('end').style.opacity=cl((t-4.8)/0.3); $('end').style.transform=`scale(${0.85+0.15*e})`;
+ const qa=back((t-5.15)/0.6); $('qrc').style.opacity=cl((t-5.15)/0.25); $('qrc').style.transform=`translateY(${(1-qa)*40}px) scale(${0.9+0.1*qa})`;
+ const H=Math.max(0,t-5.4);
+ ST.forEach(([id,x,y,r],i)=>{const el=$(id); const a=back((t-4.9-i*0.07)/0.6); el.style.opacity=cl((t-4.9-i*0.07)/0.25);
+  const bob=Math.sin(H*(1.1+0.2*(i%3))+i)*(10+4*(i%2)); el.style.left=x+'px'; el.style.top=(y+bob+(1-a)*80)+'px';
+  el.style.transform=`rotate(${r+Math.sin(H*0.8+i)*4}deg) scale(${0.6+0.4*a})`});
+ $('logo').querySelector('img').style.transform=`scale(${1+0.06*Math.sin(H*1.6)})`;
+}
+window.render=render; render(0);
+</script></body></html>

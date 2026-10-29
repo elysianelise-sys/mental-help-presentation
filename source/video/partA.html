@@ -1,0 +1,95 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif}
+.abs{position:absolute}
+#dark{inset:0;background:radial-gradient(ellipse at 50% 45%,#4A2236 0%,#24101C 55%,#12070D 100%)}
+#darkglow{left:560px;top:260px;width:800px;height:600px;border-radius:50%;background:radial-gradient(ellipse,rgba(233,135,159,.35),rgba(201,169,230,.12) 45%,rgba(0,0,0,0) 70%)}
+#pastel{inset:0;background:#F7E3F0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px)}
+#head{left:0;width:1920px;top:250px;text-align:center;font:700 92px 'Bricolage Grotesque';letter-spacing:-3px;color:#FFF}
+#head span{display:inline-block}
+.grad{background:linear-gradient(90deg,#F7A9C0,#C9A9E6);-webkit-background-clip:text;color:transparent}
+#card{left:660px;top:420px;width:600px;background:#FFFFFF;border-radius:36px;padding:34px 36px;box-shadow:0 40px 90px rgba(0,0,0,.35)}
+#card h3{font:800 34px 'Plus Jakarta Sans';color:#2B1D25}
+#card p{font:500 22px 'Plus Jakarta Sans';color:#8C7080;margin-top:6px}
+#orbs{display:flex;gap:22px;margin-top:26px}
+#orbs div{display:flex;flex-direction:column;align-items:center;gap:8px;font:600 20px 'Plus Jakarta Sans';color:#6E5462}
+#orbs img{width:96px;height:96px;border-radius:50%}
+#ring{position:absolute;width:112px;height:112px;border-radius:50%;border:5px solid #F29BB0;opacity:0}
+#save{margin-top:30px;text-align:center;font:700 28px 'Plus Jakarta Sans';color:#713043;background:#F29BB0;padding:20px 0;border-radius:999px}
+#cursor{width:56px;height:70px}
+#input{left:560px;width:800px;background:#FFFFFF;border-radius:34px;box-shadow:0 30px 80px rgba(160,90,140,.25);padding:26px 30px}
+#txt{font:500 34px 'Plus Jakarta Sans';color:#2B1D25;line-height:1.35;min-height:46px}
+#ph{font:500 34px 'Plus Jakarta Sans';color:#B8A3AE}
+#caret{display:inline-block;width:3px;height:38px;background:#E98AA8;vertical-align:middle;margin-left:2px}
+#bar{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+#plus{font:400 40px 'Plus Jakarta Sans';color:#9B8492}
+#send{width:58px;height:58px;border-radius:50%;background:#2B1D25;display:flex;align-items:center;justify-content:center;color:#fff;font:700 30px 'Plus Jakarta Sans'}
+#pill{left:660px;width:600px;top:500px;height:96px;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 30px 80px rgba(160,90,140,.25);display:flex;align-items:center;justify-content:center;gap:18px}
+#pilltxt{font:700 38px 'Plus Jakarta Sans';background:linear-gradient(90deg,#B98AA8 0%,#B98AA8 35%,#FFFFFF 50%,#B98AA8 65%,#B98AA8 100%);background-size:300% 100%;-webkit-background-clip:text;color:transparent}
+#pillorb{width:52px;height:52px}
+#phone{left:717px;width:486px;height:952px}
+#flash{inset:0;background:#FFF}
+</style></head><body>
+<div id="pastel" class="abs">
+ <div class="blob" id="b1" style="width:900px;height:900px;background:#F7B9CE"></div>
+ <div class="blob" id="b2" style="width:800px;height:800px;background:#C9B6F2"></div>
+ <div class="blob" id="b3" style="width:700px;height:700px;background:#FFD3C0"></div>
+ <div class="blob" id="b4" style="width:600px;height:600px;background:#B9C8F7"></div>
+ <div id="input" class="abs"><div id="txt"><span id="t"></span><span id="ph">Ask Mental Help…</span><span id="caret"></span></div><div id="bar"><div id="plus">+</div><div id="send">↑</div></div></div>
+ <div id="pill" class="abs"><img id="pillorb" src="orb-calm.png"><div id="pilltxt">Finding something calm…</div></div>
+ <img id="phone" class="abs" src="ph-explore-front.png">
+</div>
+<div id="dark" class="abs"><div id="darkglow" class="abs"></div>
+ <div id="head" class="abs"><span id="w1">Even&nbsp;</span><span id="w2">a&nbsp;</span><span id="w3">small&nbsp;</span><span id="w4" class="grad">feeling</span></div>
+ <div id="card" class="abs"><h3>How are you feeling?</h3><p>Pick the one closest to now.</p>
+  <div id="orbs"><div><img src="orb-joy.png">Joyful</div><div id="calmo" style="position:relative"><div id="ring" style="left:-8px;top:-8px"></div><img src="orb-calm.png">Calm</div><div><img src="orb-neutral.png">Neutral</div><div><img src="orb-anxious.png">Anxious</div></div>
+  <div id="save">Save Check-In →</div></div>
+</div>
+<svg id="cursor" class="abs" viewBox="0 0 34 46"><path d="M3 3 L3 37 L12 29 L18 43 L24 40 L18 27 L30 27 Z" fill="#FFFFFF" stroke="#2B1D25" stroke-width="2.6" stroke-linejoin="round"/></svg>
+<div id="flash" class="abs"></div>
+<script>
+const $=id=>document.getElementById(id);
+const cl=x=>Math.max(0,Math.min(1,x)), eo=x=>1-Math.pow(1-cl(x),3), eio=x=>{x=cl(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=cl(x);const c1=1.6,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const MSG="I can't stop overthinking tonight…";
+function render(t){
+ // ---- dark scene 0..2.6
+ const dk=1-eio((t-2.45)/0.35); $('dark').style.opacity=dk; $('dark').style.display=dk<=0?'none':'block';
+ ['w1','w2','w3','w4'].forEach((w,i)=>{const k=back((t-0.1-i*0.12)/0.45);const e=$(w);e.style.opacity=cl((t-0.1-i*0.12)/0.3);e.style.transform=`translateY(${(1-k)*50}px)`});
+ const ck=back((t-0.55)/0.55); $('card').style.opacity=cl((t-0.55)/0.3); $('card').style.transform=`translateY(${(1-ck)*80}px) scale(${0.9+0.1*ck}) scale(${1+0.06*eio((t-2.3)/0.4)})`;
+ // cursor path
+ let cx=1500,cy=1000,show=0;
+ if(t>0.9&&t<2.7){show=1;
+  const a=eio((t-0.9)/0.5); const b=eio((t-1.6)/0.45);
+  const p1=[1500,1000],p2=[857,602],p3=[980,748];
+  cx=p1[0]+(p2[0]-p1[0])*a+(p3[0]-p2[0])*b; cy=p1[1]+(p2[1]-p1[1])*a+(p3[1]-p2[1])*b;}
+ $('cursor').style.display=show&&t<2.5?'block':'none';
+ const press=(d)=>Math.max(0,1-Math.abs(d)/0.12);
+ const c1=press(t-1.45), c2=press(t-2.15);
+ $('cursor').style.transform=`translate(${cx}px,${cy}px) scale(${1-0.15*Math.max(c1,c2)})`; $('cursor').style.left='0px';$('cursor').style.top='0px';
+ $('ring').style.opacity=t>1.45?1:0; $('calmo').style.transform=`scale(${1+0.12*c1})`;
+ $('save').style.transform=`scale(${1-0.05*c2})`; $('save').style.background=t>2.15?'#E98AA8':'#F29BB0';
+ // ---- pastel bg blobs
+ const bt=t*0.5;
+ [['b1',300,200,260,180],['b2',1200,100,220,200],['b3',200,600,280,160],['b4',1300,600,240,190]].forEach(([id,x,y,ax,ay],i)=>{$(id).style.left=(x+Math.sin(bt+i*1.7)*ax)+'px';$(id).style.top=(y+Math.cos(bt*0.8+i)*ay)+'px'});
+ // input typing 2.7..5.0
+ const ia=back((t-2.7)/0.5); const iv=t<5.3?cl((t-2.7)/0.3):1-cl((t-5.2)/0.25);
+ const inp=$('input'); inp.style.opacity=iv; inp.style.top=(420+(1-ia)*60)+'px';
+ inp.style.transform=`scale(${0.92+0.08*ia}) scale(${1-0.25*eio((t-5.15)/0.3)})`;
+ const n=Math.floor(cl((t-3.1)/1.6)*MSG.length); $('t').textContent=MSG.slice(0,n); $('ph').style.display=n?'none':'inline';
+ $('caret').style.opacity=(Math.floor(t*2.4)%2&&n>=MSG.length)?0:1;
+ $('send').style.background=n>=MSG.length?'#E98AA8':'#2B1D25'; $('send').style.transform=`scale(${1-0.15*Math.max(0,1-Math.abs(t-4.95)/0.12)})`;
+ // pill 5.3..6.6
+ const pv=t<6.5?eo((t-5.3)/0.35):1-cl((t-6.5)/0.25); $('pill').style.opacity=pv; $('pill').style.transform=`scale(${0.8+0.2*back((t-5.3)/0.45)})`;
+ $('pilltxt').style.backgroundPosition=`${100-((t*70)%100)}% 0`; $('pillorb').style.transform=`scale(${1+0.12*Math.sin(t*6)})`;
+ // phone 6.4..8.6 rise then zoom into card
+ const pr=back((t-6.4)/0.7), pz=eio((t-7.4)/1.1);
+ const ph=$('phone'); ph.style.opacity=cl((t-6.4)/0.2);
+ const s=0.95+1.9*pz; ph.style.transform=`translateY(${(1-pr)*900 + 64 - pz*80}px) scale(${s})`; ph.style.transformOrigin='50% 46%'; ph.style.top='64px';
+ $('flash').style.opacity=Math.max(0,1-Math.abs(t-8.45)/0.15)*0.95;
+}
+window.render=render; render(0);
+</script></body></html>

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F3DDE8">
+<title>%%TITLE%%</title>
+<meta name="description" content="Mental Help – a mobile-first mental wellness web app. UI/UX project presentation by Elise.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#F3DDE8;font-family:'Plus Jakarta Sans',Arial,sans-serif;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+a{color:inherit;text-decoration:none}
+ul{padding-left:1.2em}
+button{touch-action:manipulation}
+
+/* ---------- deck (one slide at a time) ---------- */
+#stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(113,48,67,.18);touch-action:manipulation}
+.card{position:absolute;inset:0;display:none}
+.card.live{display:block}
+.card.cur{z-index:1}
+.card>section{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:block;opacity:0;transition:opacity .45s ease}
+.card>section.on{opacity:1}
+/* enlarge the tap target of links inside slides */
+.card a{position:relative;z-index:2}
+.card a::after{content:"";position:absolute;inset:-18px -40px}
+
+#ui{position:fixed;left:50%;bottom:max(18px,calc(env(safe-area-inset-bottom,0px) + 12px));transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:5px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 8px 24px rgba(113,48,67,.16);font:600 14px 'Plus Jakarta Sans',sans-serif;color:#2B1D25;transition:opacity .3s;z-index:5}
+#ui button{width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:#713043;font:700 22px/1 'Plus Jakarta Sans',sans-serif;cursor:pointer;display:grid;place-items:center}
+#ui button:hover,#ui button:active{background:#FCE4EC}
+#ui button:focus-visible{outline:2px solid #E98AA8;outline-offset:1px}
+#ui-count{min-width:64px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:13px}
+body.idle #ui{opacity:0}
+
+/* music volume (shown on the video slide) */
+#snd{position:fixed;left:max(16px,calc(env(safe-area-inset-left,0px) + 12px));bottom:max(18px,calc(env(safe-area-inset-bottom,0px) + 12px));display:flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 8px 24px rgba(113,48,67,.16);z-index:5;transition:opacity .3s}
+#snd[hidden]{display:none!important}
+body.feed #snd{display:none!important}
+#snd button{width:44px;height:44px;border:0;border-radius:50%;background:#FCE4EC;color:#713043;display:grid;place-items:center;cursor:pointer;touch-action:manipulation}
+#snd button svg{width:22px;height:22px}
+#snd button:focus-visible,#snd input:focus-visible{outline:2px solid #E98AA8;outline-offset:2px}
+#snd label{font:600 13px 'Plus Jakarta Sans',sans-serif;color:#713043;white-space:nowrap}
+#snd input{-webkit-appearance:none;appearance:none;width:120px;height:6px;border-radius:999px;background:linear-gradient(90deg,#E98AA8 var(--v,70%),#F3DCE6 var(--v,70%));outline:none;touch-action:none}
+#snd input::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #E98AA8;box-shadow:0 2px 6px rgba(113,48,67,.25)}
+#snd input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:2px solid #E98AA8}
+body.idle #snd{opacity:0}
+@media (max-height:520px) and (orientation:landscape){#snd{bottom:max(10px,env(safe-area-inset-bottom,0px));padding-right:10px}#snd label{display:none}#snd input{width:90px}}
+@media (max-height:520px) and (orientation:landscape){
+  #ui{left:auto;right:max(6px,calc(env(safe-area-inset-right,0px) - 4px));top:50%;bottom:auto;transform:translateY(-50%);flex-direction:column;gap:2px;padding:4px;background:rgba(255,255,255,.8)}
+  #ui-count{min-width:0;font-size:10px;writing-mode:horizontal-tb;padding:2px 0}
+}
+#bar{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,#F29BB0,#C9A9E6);transition:width .4s;z-index:5}
+#ui-all{display:none!important}
+body.forced #ui-all{display:grid!important}
+
+/* ---------- phone held upright: light list of slide pictures ---------- */
+#feed{display:none}
+body.feed{background:#FBE9F0}
+body.feed #stage,body.feed #ui,body.feed #bar{display:none}
+body.feed #feed{display:block;position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:linear-gradient(180deg,#FBE9F0 0%,#F1E6FA 100%);padding:0 max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+#hint{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:12px;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px))) 16px;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 14px;background:#FFF6F9;border-bottom:1px solid #F3DCE6;font:600 14px/1.35 'Plus Jakarta Sans',sans-serif;color:#6E5462}
+#hint b{display:block;font:700 18px 'Bricolage Grotesque',sans-serif;color:#2B1D25}
+#hint .ph{flex:none;width:22px;height:36px;border:2.5px solid #E98AA8;border-radius:6px;animation:rot 2.4s ease-in-out infinite}
+@keyframes rot{0%,30%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+#list{display:flex;flex-direction:column;gap:14px;list-style:none;padding:0}
+#list button{touch-action:pan-y;position:relative;display:block;width:100%;aspect-ratio:16/9;max-width:100%;border:0;padding:0;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(113,48,67,.14);cursor:zoom-in}
+#list img{display:block;width:100%;height:100%;object-fit:cover}
+#list .num{position:absolute;left:10px;top:8px;font:600 11px 'JetBrains Mono',monospace;color:#713043;background:rgba(255,255,255,.88);padding:2px 8px;border-radius:999px}
+#links{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+#links a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#713043;font:700 14px 'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 14px rgba(113,48,67,.12)}
+
+/* ---------- build-in animations ---------- */
+section .a{animation:none}
+section.on .a{animation:aIn .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*70ms + 120ms)}
+section.on .a.pop{animation-name:aPop}
+section.on .a.fade{animation:aFade 1.4s ease both;animation-delay:calc(var(--i)*40ms)}
+section.on .a.float{animation:aPop .8s cubic-bezier(.2,.8,.2,1) both,aBob 4.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*70ms + 120ms),calc(var(--i)*70ms + 1s)}
+section.on .a.drift{animation:aPop .9s cubic-bezier(.2,.8,.2,1) both,aDrift 7s ease-in-out infinite alternate;animation-delay:calc(var(--i)*70ms + 120ms),calc(var(--i)*70ms + 1.2s)}
+@keyframes aIn{from{opacity:0;translate:0 34px}}
+@keyframes aPop{from{opacity:0;translate:0 40px;scale:.9}}
+@keyframes aFade{from{opacity:0}}
+@keyframes aBob{from{translate:0 0;rotate:0deg}to{translate:0 -14px;rotate:4deg}}
+@keyframes aDrift{from{translate:0 0}to{translate:0 -10px}}
+@media (prefers-reduced-motion:reduce){section .a{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<main id="stage" aria-live="polite">
+%%SLIDES%%
+</main>
+<div id="snd" hidden>
+<button id="snd-btn" aria-label="Mute music"></button>
+<label for="snd-vol">Music</label>
+<input id="snd-vol" type="range" min="0" max="1" step="0.05" value="0.7" aria-label="Music volume">
+</div>
+<nav id="ui" aria-label="Slide controls">
+<button id="ui-prev" aria-label="Previous slide">‹</button>
+<span id="ui-count">1 / 1</span>
+<button id="ui-next" aria-label="Next slide">›</button>
+<button id="ui-fs" aria-label="Full screen" title="Full screen (F)">⤢</button>
+<button id="ui-all" aria-label="Back to all slides" title="All slides">☰</button>
+</nav>
+<div id="feed">
+<header id="hint"><span class="ph" aria-hidden="true"></span><span><b>Mental Help · Project presentation</b>Turn your phone sideways to present. Tap a slide to open it.</span></header>
+<ol id="list"></ol>
+<nav id="links" aria-label="Project links">%%LINKS%%</nav>
+</div>
+<script>
+(function(){
+const stage=document.getElementById('stage'), S=[...stage.children], n=S.length;
+const C=S.map((s,k)=>{const c=document.createElement('div');c.className='card';s.before(c);c.appendChild(s);return c;});
+
+// tag elements for entrance animations
+function px(v){return parseFloat(v)||0}
+S.forEach(sec=>{let m=0;
+  const take=(el,depth)=>{
+    if(el.tagName==='VIDEO'||el.tagName==='ASIDE')return;
+    const st=el.style, w=px(st.width), big=el.tagName==='DIV'&&w>=1400&&el.children.length&&depth<3;
+    if(big){el.classList.add('a','fade');el.style.setProperty('--i',0);[...el.children].forEach(c=>take(c,depth+1));return;}
+    if(el.tagName==='DIV'&&st.position==='relative'&&w>=1400){[...el.children].forEach(c=>take(c,depth+1));return;}
+    el.classList.add('a');el.style.setProperty('--i',m++);
+    const fs=px(st.fontSize), bg=st.background||'';
+    if(fs>=200||(el.tagName==='DIV'&&!el.children.length&&/radial-gradient/.test(bg)&&w>=300))el.classList.add('fade');
+    else if(el.tagName==='IMG'||el.tagName==='svg'){const sz=Math.max(w,px(st.height));
+      if(sz&&sz<=240)el.classList.add('float');else if(sz>=300&&w<700&&px(st.height)<1000)el.classList.add('drift');else el.classList.add('pop');}
+    else if(el.tagName==='DIV'&&!el.children.length&&/radial-gradient/.test(bg))el.classList.add('float');
+  };
+  [...sec.children].forEach(c=>take(c,0));
+});
+
+// phone list: pictures of each slide (light on memory)
+const list=document.getElementById('list');
+S.forEach((s,k)=>{const li=document.createElement('li');const b=document.createElement('button');
+  b.setAttribute('aria-label','Open slide '+(k+1));
+  b.innerHTML=`<img src="thumbs/${k+1}.jpg" alt="" loading="${k<3?'eager':'lazy'}" decoding="async" width="960" height="540"><span class="num">${k+1} / ${n}</span>`;
+  b.onclick=()=>{forced=true;document.body.classList.add('forced');fit(true);go(k,true,true);};
+  li.appendChild(b);list.appendChild(li);});
+
+let i=-1, feed=null, forced=false, hideT={};
+const isFeed=()=>!forced&&innerHeight>innerWidth&&innerWidth<820;
+function fit(){
+  const f=isFeed();
+  if(f!==feed){feed=f;document.body.classList.toggle('feed',f);
+    if(f){document.documentElement.classList.add('feed');snd.hidden=true;S.forEach(s=>s.querySelectorAll('video').forEach(v=>v.pause()));C.forEach(c=>c.classList.remove('live','cur'));
+      const li=list.children[Math.max(0,i)];requestAnimationFrame(()=>li&&li.scrollIntoView({block:'center'}));}
+    else{document.documentElement.classList.remove('feed');const j=i<0?0:i;i=-1;go(j,false,true);} }
+  if(feed)return;
+  const k=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`scale(${k}) translate(-50%,-50%)`;}
+
+function show(k,on){const c=C[k];if(!c)return;clearTimeout(hideT[k]);
+  if(on){c.classList.add('live');}
+  else{hideT[k]=setTimeout(()=>{if(k!==i)c.classList.remove('live')},520);}}
+function go(j,push,force){
+  if(feed)return;
+  j=Math.max(0,Math.min(n-1,j)); if(j===i&&!force)return;
+  if(i>=0&&i!==j){S[i].classList.remove('on');C[i].classList.remove('cur');S[i].querySelectorAll('video').forEach(v=>v.pause());show(i,false);}
+  i=j; show(i,true); C[i].classList.add('cur');
+  S[i].classList.remove('on'); void S[i].offsetWidth; S[i].classList.add('on');
+  const vids=S[i].querySelectorAll('video'); snd.hidden=!vids.length; vids.forEach(playVideo);
+  document.getElementById('ui-count').textContent=(i+1)+' / '+n;
+  document.getElementById('bar').style.width=((i+1)/n*100)+'%';
+  if(push!==false)history.replaceState(null,'','#'+(i+1));
+}
+
+// ---------- music volume ----------
+const snd=document.getElementById('snd'), sbtn=document.getElementById('snd-btn'), svol=document.getElementById('snd-vol');
+const ICON_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
+const ICON_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+let vol=0.7, muted=false, actx=null, gain=null; const wired=new WeakSet();
+try{const sv=localStorage.getItem('mh-vol');if(sv!==null)vol=Math.min(1,Math.max(0,parseFloat(sv)));}catch(e){}
+svol.value=vol;
+function audioGraph(v){
+  if(wired.has(v))return;
+  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    actx=actx||new AC(); gain=gain||actx.createGain(); gain.connect(actx.destination);
+    actx.createMediaElementSource(v).connect(gain); wired.add(v);}catch(e){}
+}
+function applyVol(){
+  const level=muted?0:vol;
+  svol.style.setProperty('--v',(vol*100)+'%');
+  sbtn.innerHTML=level>0?ICON_ON:ICON_OFF; sbtn.setAttribute('aria-label',level>0?'Mute music':'Play music');
+  S.forEach(sec=>sec.querySelectorAll('video').forEach(v=>{
+    if(gain){gain.gain.value=level;v.volume=1;}else{try{v.volume=level}catch(e){}}
+    v.muted=level===0;}));
+}
+function playVideo(v){
+  if(!v.src)v.src=v.dataset.src;
+  try{v.currentTime=0}catch(e){}
+  audioGraph(v); if(actx&&actx.state==='suspended')actx.resume().catch(()=>{});
+  applyVol();
+  const p=v.play();
+  if(p&&p.catch)p.catch(()=>{ // the browser blocked sound without a tap: play silently, tap the speaker for sound
+    v.muted=true; muted=true; applyVol(); v.play().catch(()=>{}); });
+}
+sbtn.addEventListener('click',e=>{e.stopPropagation();
+  if(actx&&actx.state==='suspended')actx.resume().catch(()=>{});
+  if(muted||vol===0){muted=false;if(vol===0)vol=0.7;svol.value=vol;}else muted=true;
+  applyVol(); const v=S[i]&&S[i].querySelector('video'); if(v&&v.paused)v.play().catch(()=>{}); wake();});
+svol.addEventListener('input',()=>{vol=parseFloat(svol.value);muted=vol===0;
+  if(actx&&actx.state==='suspended')actx.resume().catch(()=>{});
+  applyVol();try{localStorage.setItem('mh-vol',String(vol))}catch(e){} wake();});
+['click','touchstart','touchend','pointerdown','keydown'].forEach(ev=>snd.addEventListener(ev,e=>e.stopPropagation()));
+addEventListener('resize',()=>fit());
+addEventListener('orientationchange',()=>setTimeout(fit,250));
+
+addEventListener('keydown',e=>{
+  if(feed)return; const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();go(i+1)}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();go(i-1)}
+  else if(k==='Home')go(0); else if(k==='End')go(n-1);
+  else if(k==='f'||k==='F')toggleFs();
+});
+const canFs=!!(document.documentElement.requestFullscreen);
+if(!canFs)document.getElementById('ui-fs').style.display='none';
+function toggleFs(){if(!canFs)return;if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else document.documentElement.requestFullscreen().catch(()=>{});}
+function btn(id,f){const el=document.getElementById(id);el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();f();wake();});}
+btn('ui-prev',()=>go(i-1)); btn('ui-next',()=>go(i+1)); btn('ui-fs',toggleFs);
+btn('ui-all',()=>{forced=false;document.body.classList.remove('forced');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});fit();});
+
+// tap / swipe on the slide itself
+let sx=null,sy=null,moved=false;
+stage.addEventListener('touchstart',e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;moved=false;},{passive:true});
+stage.addEventListener('touchmove',e=>{if(sx==null)return;const t=e.touches[0];if(Math.abs(t.clientX-sx)>12||Math.abs(t.clientY-sy)>12)moved=true;},{passive:true});
+stage.addEventListener('touchend',e=>{if(sx==null)return;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;sx=null;
+  if(moved&&Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){go(dx<0?i+1:i-1);}},{passive:true});
+stage.addEventListener('click',e=>{if(e.target.closest('a'))return;if(moved){moved=false;return;}
+  if(e.clientX<innerWidth*0.3)go(i-1);else go(i+1);wake();});
+
+let t;const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+function wake(){document.body.classList.remove('idle');clearTimeout(t);if(fine)t=setTimeout(()=>document.body.classList.add('idle'),2500)}
+addEventListener('mousemove',wake);addEventListener('keydown',wake);wake();
+
+const h=parseInt(location.hash.slice(1));
+fit(); if(!feed)go(h>0?h-1:0,false,true); else if(h>0)i=h-1;
+})();
+</script>
+</body>
+</html>

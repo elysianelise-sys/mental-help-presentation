@@ -1,0 +1,101 @@
+{
+  "v": 4,
+  "attachments": {},
+  "cover": "cover",
+  "createdOnFiles": {
+    "at": "2026-10-17T04:52:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "faces": {
+    "bricolage-grotesque": {
+      "family": "Bricolage Grotesque",
+      "href": "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap"
+    },
+    "jetbrains-mono": {
+      "family": "JetBrains Mono",
+      "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+    },
+    "plus-jakarta-sans": {
+      "family": "Plus Jakarta Sans",
+      "href": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    }
+  },
+  "lists": "css",
+  "order": [
+    "cover",
+    "problem",
+    "solution",
+    "audience",
+    "persona",
+    "scope",
+    "userflow",
+    "colours",
+    "type",
+    "direction",
+    "principles",
+    "principles2",
+    "motion",
+    "prototype",
+    "references",
+    "references2",
+    "figma",
+    "liveapp",
+    "bonus",
+    "bonus2",
+    "skills",
+    "hurdles",
+    "hurdles2",
+    "evolution",
+    "inhand",
+    "next",
+    "thanks"
+  ],
+  "sections": {
+    "s0": {
+      "description": "Title of the project",
+      "start": "cover"
+    },
+    "s1": {
+      "description": "Problem statement: the friction, who has it, when, current options and our solution",
+      "start": "problem"
+    },
+    "s10": {
+      "description": "Reflection and retrospective",
+      "start": "skills"
+    },
+    "s2": {
+      "description": "Target audience, chosen breakpoint and layout priorities",
+      "start": "audience"
+    },
+    "s3": {
+      "description": "The compact user flow",
+      "start": "userflow"
+    },
+    "s4": {
+      "description": "Design system: colour, type, components, mascot direction and motion",
+      "start": "colours"
+    },
+    "s5": {
+      "description": "The first HTML prototype",
+      "start": "prototype"
+    },
+    "s6": {
+      "description": "Visual references",
+      "start": "references"
+    },
+    "s7": {
+      "description": "Hi-fi Figma screens",
+      "start": "figma"
+    },
+    "s8": {
+      "description": "The live app built with Codex and deployed on Vercel",
+      "start": "liveapp"
+    },
+    "s9": {
+      "description": "Bonus challenges attempted",
+      "start": "bonus"
+    }
+  },
+  "title": "Mental Help – Project Presentation"
+}
